@@ -29,6 +29,18 @@ class FileDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user.is_staff:
             return File.objects.all()
         return File.objects.filter(user=self.request.user)
+  
+  def delete(self, request, pk):
+    try:
+      file = File.objects.get(pk=pk, user=request.user)
+    except File.DoesNotExist:
+      return Response({"error": "Файл не найден"}, status=status.HTTP_404_NOT_FOUND)
+    
+    file.file.delete(save=False)
+
+    file.delete()
+
+    return Response({"message": "Файл успешно удалён"}, status=status.HTTP_204_NO_CONTENT)
 
 class FileDownloadView(APIView):
   permission_classes = [permissions.IsAuthenticated]

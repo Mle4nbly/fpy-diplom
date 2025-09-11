@@ -14,16 +14,8 @@ class File(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   file = models.FileField(upload_to=user_directory_path)
   original_name = models.CharField(max_length=255)
-  stored_name = models.CharField(max_length=255, editable=False)
-  size = models.BigIntegerField()
+  size = models.BigIntegerField(editable=False)
   uploaded_at = models.DateTimeField(auto_now_add=True)
-
-  def save(self, *args, **kwargs):
-    if not self.pk:
-        self.original_name = self.file.name.split('/')[-1] 
-        self.stored_name = os.path.basename(self.file.name)
-        self.size = self.file.size
-    super().save(*args, **kwargs)
 
   def __str__(self):
     return self.original_name
