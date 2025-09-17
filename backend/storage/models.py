@@ -17,5 +17,9 @@ class File(models.Model):
   size = models.BigIntegerField(editable=False)
   uploaded_at = models.DateTimeField(auto_now_add=True)
 
+  def save(self, *args, **kwargs):
+    self.size = self.file.size
+    super().save()
+
   def __str__(self):
     return self.original_name
