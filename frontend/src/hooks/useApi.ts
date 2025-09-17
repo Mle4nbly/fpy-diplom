@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useApi = <T>(endpoint: string) => {
+export const useApi = <T>(endpoint: string, token?: string) => {
   const [data, setData] = useState<T[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,12 +19,17 @@ export const useApi = <T>(endpoint: string) => {
       setLoading(true);
 
       try {
-        const response = await fetch(`http://localhost:3000${endpoint}`, {
+        const response = await fetch(`http://localhost:8000/api${endpoint}`, {
           signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${token}`
+          },
         });
         if (!response.ok) throw new Error("Ошибка запроса");
 
         const jsonData = await response.json();
+        console.log(jsonData)
         setData(jsonData);
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -44,15 +49,16 @@ export const useApi = <T>(endpoint: string) => {
     return () => controller.abort();
   }, [endpoint]);
 
-  const sendData = async <B>(method: "POST" | "PUT" | "DELETE", body?: B) => {
+  const sendData = async <B>(method: "POST" | "PUT" | "DELETE", body?: B, ) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`http://localhost:3000${endpoint}`, {
+      const response = await fetch(`http://localhost:8000/api${endpoint}`, {
         method,
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Token ${token}`
         },
         body: body ? JSON.stringify(body) : undefined,
       });
