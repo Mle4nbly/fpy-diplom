@@ -1,6 +1,0 @@
-export const RegisterPage = () => {
-  return (
-    <>
-    </>
-  )
-}
