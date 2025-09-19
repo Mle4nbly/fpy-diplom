@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react"
-import { FileManager } from "../components/File/FileManager"
 import { Headers } from "../layouts/Headers"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth"
 import { useApi } from "../hooks/useApi"
+import { FileList } from "../components/File/FilesList"
+import type { FileType } from "../types/FileType"
 
 export const MainPage = () => {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q');
 
-  const token = localStorage.getItem('token') || null
+  const username = localStorage.getItem('username');
+  const token = localStorage.getItem('token') || undefined;
+  const { isAuth, logout } = useAuth();
 
   const [view, setView] = useState<'list' | 'grid'>('list');
-  const [isAuth, setIsAuth] = useState(() => {
-    return token ? true : false
-  });
 
-  const { sendData } = useApi('/files/', token ? token : undefined)
+  const { data, loading, error, sendData, getData } = useApi<FileType>(token);
 
   useEffect(() => {
-  }, [])
+    if (!isAuth) {
+      navigate('/auth')
+    }
+
+    getData('/files')
+  }, [isAuth])
+
+  
 
   const handleSearch = (newQuery: string) => {
     setSearchParams({
@@ -26,38 +35,43 @@ export const MainPage = () => {
     })
   }
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
 
-    
+    await sendData("POST", formData, '/files')
+    getData('/files')
+  }
+
+  const handleFileEdit = async (fileId: string) => {
+  
+  }
+
+  const handleFileDelete = async (fileId: string) => {
+  
   }
 
   const handleLogout = () => {
-    setIsAuth(false)
-  }
-
-  const handleLogin = () => {
-    setIsAuth(true)
-  }
-
-  const handleRegister = () => {
-    console.log('registration')
+    logout()
   }
 
   return (
-    <>
-      <Headers
-        isAuth={isAuth}
-        view={view}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
-        onRegister={handleRegister}
-        onSearch={handleSearch}
-        onToggleView={setView}
-        onFileSelect={handleFileUpload}
-      />
-      <FileManager query={query} view={view}/>
-    </>
-  )
+    <div className="container bg-light shadow-sm mb-4 h-100">
+      <header className="container-header bg-light">
+        <Headers
+          isAuth={isAuth}
+          view={view}
+          username={username}
+          onLogout={handleLogout}
+          onSearch={handleSearch}
+          onToggleView={setView}
+          onFileSelect={handleFileUpload}
+        />
+      </header>
+
+      <main className="bg-light">
+        <FileList view={view} files={data} loading={loading} error={error}/>
+      </main>
+    </div>
+  );
 }

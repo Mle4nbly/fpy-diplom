@@ -6,34 +6,26 @@ import { UploadButton } from "../components/ui/UploadButton";
 export interface HeadersProps {
   isAuth: boolean,
   view: 'list' | 'grid',
+  username: string | null,
   onLogout: () => void,
-  onLogin: () => void,
-  onRegister: () => void,
   onSearch: (newQuery: string) => void,
   onToggleView: (newView: 'list' | 'grid') => void,
-  onFileSelect: (file: File) => void
+  onFileSelect: (file: File) => void,
 }
 
-export const Headers = ({ isAuth, view, onLogin, onLogout, onRegister, onSearch, onToggleView, onFileSelect }: HeadersProps) => {
+export const Headers = ({ isAuth, view, onLogout, onSearch, onToggleView, onFileSelect, username }: HeadersProps) => {
   return (
-    <header className="container">
-      <div className="row">
-        <div className="col">
-          <nav className="navbar navbar-expand-sm navbar-light bg-light">
-            <div className="collapse navbar-collapse" id="navbarMain">
-              <UploadButton onFileSelect={onFileSelect}/>
-              <SearchForm onSearch={onSearch}/>
-              <ToggleSortingPics onToggle={onToggleView} view={view}/>
-              <AuthButtons 
-                isAuth={isAuth}
-                onLogin={onLogin}
-                onLogout={onLogout}
-                onReg={onRegister}
-              />
-            </div>
-          </nav>
-        </div>
+    <nav className="navbar navbar-expand-sm navbar-light">
+      <div className="collapse navbar-collapse" id="navbarMain">
+        <UploadButton onFileSelect={onFileSelect}/>
+        <SearchForm onSearch={onSearch}/>
+        <ToggleSortingPics onToggle={onToggleView} view={view}/>
+        <AuthButtons 
+          username={username}
+          isAuth={isAuth}
+          onLogout={onLogout}
+        />
       </div>
-    </header>
-  )
+    </nav>
+  );
 }

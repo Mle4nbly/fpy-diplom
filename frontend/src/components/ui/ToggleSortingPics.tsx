@@ -5,16 +5,18 @@ export interface ToggleSortingPicsProps {
 
 export const ToggleSortingPics = ({ onToggle, view }: ToggleSortingPicsProps) => {
   return (
-    <div>
+    <div className="btn-group ms-3">
       <button
-        className={`btn me-2 ${view === "grid" ? "btn-primary" : "btn-outline-primary"}`}
+        className={`btn ${view === "grid" ? "btn-primary" : "btn-outline-primary"}`}
         onClick={() => onToggle("grid")}
+        title="Карточки"
       >
-        Карточки
+        Сетка
       </button>
       <button
         className={`btn ${view === "list" ? "btn-primary" : "btn-outline-primary"}`}
         onClick={() => onToggle("list")}
+        title="Список"
       >
         Список
       </button>
