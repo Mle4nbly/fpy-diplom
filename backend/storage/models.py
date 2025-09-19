@@ -7,7 +7,7 @@ def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
     unique_name = f"{uuid.uuid4()}.{ext}"
 
-    return f"uploads/{instance.user.username}/{unique_name}"
+    return f"{instance.user.username}/{unique_name}"
 
 
 class File(models.Model):
@@ -19,6 +19,7 @@ class File(models.Model):
 
   def save(self, *args, **kwargs):
     self.size = self.file.size
+    self.original_name = self.file.name
     super().save()
 
   def __str__(self):

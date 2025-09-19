@@ -10,6 +10,20 @@ class RegisterView(generics.CreateAPIView):
   queryset = User.objects.all()
   serializer_class = UserSerializer
 
+  def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        # Создаём токен для нового пользователя
+        token, _ = Token.objects.get_or_create(user=user)
+
+        return Response({
+            "message": "Registration successful",
+            "token": token.key,
+            "username": user.username
+        }, status=status.HTTP_201_CREATED)
+
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')

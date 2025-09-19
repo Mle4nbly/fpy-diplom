@@ -4,12 +4,20 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import File
 from .serializers import FileSerializer
+import os
+from django.conf import settings
 
 class FileListCreateView(generics.ListCreateAPIView):
   serializer_class = FileSerializer
   permission_classes = [permissions.IsAuthenticated]
 
   def get_queryset(self):
+    files = File.objects.filter(user=self.request.user)
+    
+    for f in files:
+      path = os.path.join(settings.MEDIA_ROOT, f.file.name)
+      if not os.path.exists(path):
+            f.delete()
     return File.objects.filter(user=self.request.user)
 
   def perform_create(self, serializer):
