@@ -5,70 +5,45 @@ from rest_framework.views import APIView
 from .models import File
 from .serializers import FileSerializer
 import os
-from django.conf import settings
+from django.shortcuts import get_object_or_404
 
-class FileListCreateView(generics.ListCreateAPIView):
+class FilesListCreateView(generics.ListCreateAPIView):
   serializer_class = FileSerializer
   permission_classes = [permissions.IsAuthenticated]
 
   def get_queryset(self):
-    files = File.objects.filter(user=self.request.user)
-    
-    for f in files:
-      path = os.path.join(settings.MEDIA_ROOT, f.file.name)
-      if not os.path.exists(path):
-            f.delete()
     return File.objects.filter(user=self.request.user)
 
   def perform_create(self, serializer):
-    uploaded_file = self.request.FILES['file']
-    serializer.save(
-      user=self.request.user,
-      size=uploaded_file.size,
-      original_name=uploaded_file.name
-    )
+    serializer.save(user=self.request.user)
 
 class FileDetailView(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = FileSerializer
   permission_classes = [permissions.IsAuthenticated]
 
   def get_queryset(self):
-        print(self.request.user.is_staff)
-        if self.request.user.is_staff:
-            return File.objects.all()
-        return File.objects.filter(user=self.request.user)
-  
-  def delete(self, request, pk):
-    try:
-      file = File.objects.get(pk=pk, user=request.user)
-    except File.DoesNotExist:
-      return Response({"error": "Файл не найден"}, status=status.HTTP_404_NOT_FOUND)
-    
-    file.file.delete(save=False)
+    return File.objects.filter(user=self.request.user)
 
-    file.delete()
-
-    return Response({"message": "Файл успешно удалён"}, status=status.HTTP_204_NO_CONTENT)
+  def perform_destroy(self, instance):
+    instance.file.delete(save=False)
+    super().perform_destroy(instance)
 
 class FileDownloadView(APIView):
   permission_classes = [permissions.IsAuthenticated]
 
   def get(self, request, pk):
-    try:
-      file_obj = File.objects.get(pk=pk)
-      if file_obj.user != request.user and not request.user.is_staff:
-        return Response({"error": "Нет доступа"}, status=status.HTTP_403_FORBIDDEN)
+    file_obj = get_object_or_404(File, pk=pk, user=request.user)
+    file_path = file_obj.file.path
 
-      try:
-        return FileResponse(
-            open(file_obj.file.path, 'rb'),
-            as_attachment=True,
-            filename=file_obj.original_name
-        )
-      except FileNotFoundError:
-        return Response(
-            {"error": "Файл отсутствует на сервере"},
-            status=status.HTTP_410_GONE
-        )
-    except File.DoesNotExist:
-      return Response({"error": "Файл не найден"}, status=status.HTTP_404_NOT_FOUND)
+    if not os.path.exists(file_path):
+      file_obj.delete()
+      return Response(
+        {"detail": "The file is gone."},
+        status=status.HTTP_410_GONE
+      )
+    
+    return FileResponse(
+      open(file_path, 'rb'),
+      as_attachment=True,
+      filename=file_obj.name
+    )
