@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = ['id', 'full_name', 'username', 'password', 'email', 'is_admin']
+    fields = ['id', 'username', 'password', 'email', 'full_name', 'is_admin']
 
   def create(self, validated_data):
     password = validated_data.pop('password') 
@@ -24,3 +24,8 @@ class UserListSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ['id', 'username', 'email', 'files_count', 'total_size', 'is_admin']
+    read_only_fields = ['id', 'username', 'email', 'files_count', 'total_size']
+
+class LoginSerializer(serializers.ModelSerializer):
+  username = serializers.CharField()
+  password = serializers.CharField(write_only=True)
