@@ -1,50 +1,68 @@
-import { useState } from "react"
-import { useAuth } from "../hooks/useAuth";
+import { useContext, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext/AuthContext";
 
 export const AuthPage = () => {
   const navigate = useNavigate()
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [validated, setValidated] = useState(false);
 
-  const {login} = useAuth()
+  const [usernameValue, setUsernameValue] = useState('');
+  const [passwordValue, setPasswordValue] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const {login, token, username} = useContext(AuthContext)
+
+  useEffect(() => {
+    if (token && username) navigate('/');
+  }, [token, username])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      await login(username, password);
-      navigate('/')
-    } catch (error) {
-      console.log(error)
+    const form = e.currentTarget;
+
+    if (form && !form.checkValidity()) {
+      e.stopPropagation()
+      setValidated(true)
+
+      return;
     }
+
+    login(usernameValue, passwordValue);
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card shadow-sm p-4" style={{ width: "100%", maxWidth: "400px" }}>
+    <div className="d-flex justify-content-center align-items-center vh-100 w-100">
+      <div className="card shadow-sm p-4" style={{ width: "100%", maxWidth: "350px" }}>
         <h4 className="mb-4 text-center">Вход</h4>
-        <form onSubmit={handleSubmit}>
+        <form 
+          onSubmit={handleSubmit} 
+          className={`needs-validation ${validated ? 'was-validated' : ''}`}
+          noValidate
+        >
           <div className="mb-3">
             <input 
               type="text"
               name="username"
-              value={username}
+              value={usernameValue}
               className="form-control"
               placeholder="Введите логин"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsernameValue(e.target.value)}
+              required
             />
+            <div className="invalid-feedback">Заполните поле логина</div>
           </div>
           <div className="mb-3">
             <input 
               type="password"
               name="password"
-              value={password}
+              value={passwordValue}
               className="form-control"
               placeholder="Введите пароль"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPasswordValue(e.target.value)}
+              required
             />
+            <div className="invalid-feedback">Заполните поле пароля</div>
           </div>
           <div className="d-flex justify-content-between">
             <button type="submit" className="btn btn-primary">

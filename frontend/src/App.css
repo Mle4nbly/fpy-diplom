@@ -1,34 +1,40 @@
+/* ===== Imports ===== */
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=cyrillic-ext");
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=cyrillic-ext");
 @import url("bootstrap/dist/css/bootstrap.min.css");
 @import url("bootstrap-icons/font/bootstrap-icons.css");
 
+/* ===== Root ===== */
 #root {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
   margin: 0;
-  padding: 0px;
-  height: 1200px;
+  padding: 0;
   text-align: start;
   
   color: rgb(92, 92, 92);
 }
 
+/* ===== Containers ===== */
 .title {
-  margin: 1em 0px;
-}
+  margin: 0px !important;
+  padding-bottom: .5em;
 
-.btn {
-  font-size: 1.1em;
-
-  padding: .3em 1em;
+  width: 100%;
 }
 
 .container {
-  padding: 0px 4em;
+  margin: 0px;
+  padding: 1em 4em;
 }
 
 .container-header {
-  padding: 20px 0px;
+  padding: 0px 4em 1em;
+}
 
+.container-header .title {
   border-bottom: 1px solid rgb(222, 226, 230);
 }
 
@@ -37,89 +43,162 @@
   flex-direction: column;
 }
 
-.grid-file-info {
-  text-align: start;
-}
-
-.grid-content {
-  background-color: rgb(222, 226, 230);
-}
-
 .files-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 }
 
-.card-img-container {
+.grid-content {
+  position: relative;
+  background-color: rgb(222, 226, 230);
+}
+
+.grid-content .dropdown {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.grid-content:hover .dropdown {
+  display: block;
+}
+
+/* ===== Typography ===== */
+.title {
+  margin: 1em 0px;
+}
+
+.file-title-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-title {
+  text-wrap: nowrap;
+  text-align: start;
+
+  
+}
+
+/* ===== Buttons ===== */
+.btn-quit {
+  font-size: 1.1em;
+  padding: .3em 1em;
+}
+
+.btn-dropdown {
+  display: flex;
+  border: none;
+  opacity: 80%;
+  padding: 5px 5px;
+}
+
+/* ===== File rows/cells ===== */
+.file-row {
+  position: relative;
+}
+
+.file-row .dropdown {
+  position: absolute;
+
+  opacity: 0%;
+
+  top: 50%;
+  right: .5em;
+  transform: translateY(-50%);
+
+  z-index: 999;
+}
+
+.file-row:hover .dropdown {
+  opacity: 100%;
+}
+
+.file-size-cell {
+  width: 160px;
+}
+
+.file-uploaded-cell {
+  width: 160px;
+}
+
+.file-name-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== Tables ===== */
+th {
+  padding: 0px !important;
+  text-align: start;
+  font-weight: 500;
+}
+
+td {
+  text-align: start;
+  vertical-align: middle;
+  text-wrap: nowrap;
+  overflow: hidden;
+  height: 42px;
+  padding: 0px !important;
+}
+
+/* ===== File icons ===== */
+.file-icon-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  padding: 2px;
+  height: 40px;
+  width: 40px;
+}
+
+.file-icon-list svg {
+  user-select: none;
+  color: gray;
+  max-width: 70%;
+  max-height: 70%;
+}
+
+.file-icon-list img {
+  user-select: none;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 1px solid gray;
+}
+
+.file-icon-grid {
   width: 100%;
-  height: 300px;
+  height: 230px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.card-img-container img {
+.file-icon-grid img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   display: block;
 }
 
-.card-img-container svg {
+.file-icon-grid svg {
+  position: relative;
   max-width: 50%;
   max-height: 50%;
   object-fit: contain;
   display: block;
 }
 
-.list-img-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 2px;
-
-  height: 40px;
-  width: 40px;
-}
-
-.list-img-container img {
-  user-select: none;
-
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-
-  border: 1px solid gray;
-  
-}
-
-.list-img-container svg {
-  user-select: none;
-
-  color: gray;
-
-  max-width: 70%;
-  max-height: 70%;
-}
-
-.table {
-  background-color: rgb(97, 97, 97);
-
-  color: rgb(92, 92, 92);
-}
-
-th {
-  padding: 0px;
-
-  text-align: start;
-}
-
-td {
-  text-align: start;
-
-  text-wrap: nowrap;
-  overflow: hidden;
+.show {
+  display: block;
 }

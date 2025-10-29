@@ -1,18 +1,16 @@
+import { useContext } from "react"
 import { Link } from "react-router-dom"
+import { AuthContext } from "../../../contexts/AuthContext/AuthContext"
 
-export interface AuthButtonsProps {
-  isAuth: boolean,
-  onLogout: () => void,
-  username: string | null,
-}
+export const AuthButtons = () => {
+  const {token, username, logout} = useContext(AuthContext);
 
-export const AuthButtons = ({ isAuth, onLogout, username }: AuthButtonsProps) => {
   return (
     <div className="ms-auto">
-      {isAuth ? (
+      {token || username ? (
         <div className="d-flex align-items-center">
           <h5 className="me-3 mb-0">{username}</h5>
-          <button className="btn btn-outline-danger btn-sm" onClick={onLogout}>
+          <button className="btn btn-quit btn-outline-danger btn-sm" onClick={logout}>
             Выйти
           </button>
         </div>

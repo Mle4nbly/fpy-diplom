@@ -1,20 +1,40 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { MainPage } from "./pages/MainPage";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { HomePage } from "./pages/HomePage";
 import { AuthPage } from "./pages/AuthPage";
 import { RegPage } from "./pages/RegPage";
 
 import './App.css'
+import { MainLayout } from "./layouts/MainLayout";
+import { AuthLayout } from "./layouts/AuthLayout";
+import { ModalProvider } from "./contexts/ModalContext/ModalProvider";
+import { AdminPage } from "./pages/AdminPage";
+
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: '/admin', element: <AdminPage /> }
+    ],
+  },
+  {
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      { index: true, element: <AuthPage /> },
+      { path: '/auth/reg', element: <RegPage /> }
+    ]
+  }
+]);
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />}/>
-        <Route path="/auth" element={<AuthPage />}/>
-        <Route path="/auth/reg" element={<RegPage />}></Route>
-      </Routes>
-    </Router>
-  );
+    <ModalProvider>
+      <RouterProvider router={router}/>
+    </ModalProvider>
+  )
 }
 
 export default App

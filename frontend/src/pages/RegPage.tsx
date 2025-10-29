@@ -1,62 +1,94 @@
-import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext/AuthContext";
 
 export const RegPage = () => {
   const navigate = useNavigate()
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [validated, setValidated] = useState(false)
 
-  const {register} = useAuth()
+  const [usernameValue, setUsernameValue] = useState('');
+  const [emailValue, setEmailValue] = useState('');
+  const [passwordValue, setPasswordValue] = useState('');
+  const [nameValue, setNameValue] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const {register, token, username} = useContext(AuthContext);
+
+  useEffect(() => {
+    if (token && username) navigate('/');
+  }, [token, username])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      await register(username, password, email, name);
-      navigate('/');
-    } catch (error) {
-      console.log(error)
+    const form = e.currentTarget;
+
+    if (!form.checkValidity()) {
+      e.stopPropagation()
+      setValidated(true)
+
+      return;
     }
+
+    register(usernameValue, emailValue, nameValue, passwordValue);
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card shadow-sm p-4" style={{ width: "100%", maxWidth: "400px" }}>
+    <div className="d-flex justify-content-center align-items-center vh-100 w-100">
+      <div className="card shadow-sm p-4" style={{ width: "100%", maxWidth: "350px" }}>
         <h4 className="mb-4 text-center">Регистрация</h4>
-        <form onSubmit={handleSubmit}>
+        <form 
+          className={`needs-validation ${validated ? "was-validated" : ""}`}
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className="mb-3">
+            <input 
+              type="text"
+              name="name"
+              value={nameValue}
+              className="form-control"
+              placeholder="Введите полное имя"
+              onChange={(e) => setNameValue(e.target.value)}
+              required           
+            />
+            <div className="invalid-feedback">Заполните поле полного имени</div>
+          </div>
           <div className="mb-3">
             <input 
               type="text"
               name="username"
-              value={username}
+              value={usernameValue}
               className="form-control"
               placeholder="Введите логин"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsernameValue(e.target.value)}
+              required              
             />
+            <div className="invalid-feedback">Заполните поле логина</div>
           </div>
           <div className="mb-3">
             <input 
               type="email"
               name="email"
-              value={email}
+              value={emailValue}
               className="form-control"
               placeholder="Введите email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmailValue(e.target.value)}
+              required
             />
+            <div className="invalid-feedback">Заполните поле эл. почты</div>
           </div>
           <div className="mb-3">
             <input 
               type="password"
               name="password"
-              value={password}
+              value={passwordValue}
               className="form-control"
               placeholder="Введите пароль"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPasswordValue(e.target.value)}
+              required
             />
+            <div className="invalid-feedback">Заполните поле пароля</div>
           </div>
           <button type="submit" className="btn btn-primary w-100">
             Создать аккаунт
