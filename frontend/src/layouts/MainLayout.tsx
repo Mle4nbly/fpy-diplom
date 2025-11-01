@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom"
 import { Header } from "./Header"
 import { useEffect } from "react"
-import { FileProvider } from "../contexts/FileContext/FileProvider"
+import { FileProvider } from "../contexts/FilesContext/FilesProvider"
 import { ViewTypeProvider } from "../contexts/ViewTypeContext/ViewTypeProvider"
 import { AuthProvider } from "../contexts/AuthContext/AuthProvider"
 

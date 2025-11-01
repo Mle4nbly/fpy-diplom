@@ -38,7 +38,7 @@ export const useApi = <T extends { id: number }>(token?: string) => {
   };
 
   const sendData = async (
-    method: "POST" | "PUT" | "DELETE",
+    method: "POST" | "PUT" | "DELETE" | "PATCH",
     endpoint: string,
     body?: any
   ) => {
@@ -60,16 +60,17 @@ export const useApi = <T extends { id: number }>(token?: string) => {
       }
 
       const response = await fetch(`http://localhost:8000/api${endpoint}/`, fetchOptions);
-      if (!response.ok) throw new Error("Ошибка отправки данных");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error)
+      };
 
-      const jsonData = await response.json();
-
-      console.log(jsonData);
-      return jsonData;
+      const textResponse = await response.text()
+      return textResponse ? JSON.parse(textResponse) : 'No body'
     } catch (error: unknown) {
       if (error instanceof Error && error.name !== "AbortError") {
         setError(error.message);
-        console.log(error.message)
+        console.log(error.message);
       } else {
         setError("Неопознанная ошибка");
       }

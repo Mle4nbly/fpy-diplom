@@ -64,7 +64,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         })
       })
 
-      if (!response.ok) throw new Error('Ошибка авторизации')
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error)
+      }
       const jsonData = await response.json();
 
       setUsername(jsonData.username);

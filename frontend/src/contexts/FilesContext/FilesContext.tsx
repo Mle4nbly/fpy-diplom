@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import type { FileType } from "../../types/types";
 
-export type FileContextType = {
+export type FilesContextType = {
   files: FileType[] | null,
   loading: boolean,
   error: string | null,
@@ -12,7 +12,7 @@ export type FileContextType = {
   editFile: (id: number, newName: string, description: string | null) => void,
 }
 
-export const FileContext = createContext<FileContextType>({
+export const FilesContext = createContext<FilesContextType>({
   files: [],
   error: '',
   loading: false,

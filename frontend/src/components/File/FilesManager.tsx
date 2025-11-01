@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react"
-import { FileContext } from "../../contexts/FileContext/FileContext"; 
+import { FilesContext } from "../../contexts/FilesContext/FilesContext"; 
 import { FilesList } from "./FilesView/FilesList";
 import { FilesGrid } from "./FilesView/FilesGrid";
 import { ViewTypeContext } from "../../contexts/ViewTypeContext/ViewTypeContext";
 
 export const FileManager = () => {
   const {viewType} = useContext(ViewTypeContext)
-  const {files, loading, error, getFilesList, deleteFile, editFile, downloadFile} = useContext(FileContext);
+  const {files, loading, error, getFilesList, deleteFile, editFile, downloadFile} = useContext(FilesContext);
 
   if (!files?.length) return <p>No files...</p>;
 

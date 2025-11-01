@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useApi } from "../../hooks/useApi";
-import { FileContext } from "./FileContext";
+import { FilesContext } from "./FilesContext";
 import type { FileStatus, FileType } from "../../types/types";
 
 export const FileProvider = ({children}: {children: ReactNode}) => {
@@ -8,7 +8,6 @@ export const FileProvider = ({children}: {children: ReactNode}) => {
 
   const {loading, error, getData, sendData} = useApi<FileType>(token);
   const [files, setFiles] = useState<FileType[]>([]);
-  
 
   useEffect(() => {
     getFilesList()
@@ -23,9 +22,9 @@ export const FileProvider = ({children}: {children: ReactNode}) => {
   const deleteFile = async (id: number) => {
     toggleFileStatus(id, "DELETING")
     const response = await sendData("DELETE", `/files/${id}`)
-
-    console.log(response)
-    if (response) setFiles((prev) => prev.filter((f) => f.id != id))
+    
+    
+    if (response) setFiles((prev) => prev.filter((f) => f.id !== id))
 
     toggleFileStatus(id)
   }
@@ -35,7 +34,7 @@ export const FileProvider = ({children}: {children: ReactNode}) => {
     const originalName = `${fileName}.${file.name.split('.')[1]}`
 
     formData.append("file", file);
-    formData.append("original_name", originalName);
+    formData.append("name", originalName);
     formData.append("description", `${description}`);
 
     const response = await sendData("POST", "/files", formData);
@@ -44,11 +43,11 @@ export const FileProvider = ({children}: {children: ReactNode}) => {
 
   const editFile = async (id: number, newName: string, description: string | null) => {
     toggleFileStatus(id, "EDITING")
-    const response = await sendData("PUT", `/files/${id}`, {original_name: newName, description})
+    const response = await sendData("PATCH", `/files/${id}`, {name: newName, description})
 
     if (response) {
       setFiles((prev) => 
-        prev.map((f) => (f.id == id ? {...f, original_name: newName, description: description} : f))
+        prev.map((f) => (f.id == id ? {...f, name: newName, description: description} : f))
       )
     }
 
@@ -95,8 +94,8 @@ export const FileProvider = ({children}: {children: ReactNode}) => {
   };
 
   return (
-    <FileContext.Provider value={{files, loading, error, uploadFile, getFilesList, deleteFile, editFile, downloadFile}}>
+    <FilesContext.Provider value={{files, loading, error, uploadFile, getFilesList, deleteFile, editFile, downloadFile}}>
       {children}
-    </FileContext.Provider>
+    </FilesContext.Provider>
   )
 }
