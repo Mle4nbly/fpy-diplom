@@ -6,7 +6,7 @@ from rest_framework import permissions
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Count, Sum
 from .models import User
-from .serializers import UserSerializer, UserListSerializer, LoginSerializer
+from .serializers import UserSerializer, UserListSerializer, LoginSerializer, UserDetailSerializer
 
 class IsAdmin(permissions.BasePermission):
   def has_permission(self, request, view):
@@ -24,7 +24,14 @@ class UserListView(generics.ListAPIView):
         total_size=Sum("file__size")
       )
     )
-   
+
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+  permission_classes = [IsAdmin]
+  serializer_class = UserDetailSerializer
+
+  def get_queryset(self):
+    return User.objects.exclude(pk=self.request.user.pk)
+
 class RegisterView(generics.CreateAPIView):
   serializer_class = UserSerializer
 
@@ -44,22 +51,27 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(APIView):
     def post(self, request):
-      serializer = LoginSerializer(data=request.data)
-      validated_data = serializer.is_valid(raise_exception=True)
+        serializer = LoginSerializer(data=request.data)
 
-      user = authenticate(**validated_data);
+        if not serializer.is_valid():
+            return Response({
+                "error": "Invalid credentials",
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-      if not user:
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        validated_data = serializer.validated_data
+        user = authenticate(username=validated_data['username'], password=validated_data['password'])
 
-      login(request, user)
-      token, _ = Token.objects.get_or_create(user=user)
+        if not user:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
-      return Response({
-        "message": "Login successful.",
-        "token": token.key,
-        "username": user.username
-      })
+        login(request, user)
+        token, _ = Token.objects.get_or_create(user=user)
+
+        return Response({
+            "message": "Login successful.",
+            "token": token.key,
+            "username": user.username
+        }, status=status.HTTP_200_OK)
 
 class LogoutView(APIView):
   def post(self, request):
