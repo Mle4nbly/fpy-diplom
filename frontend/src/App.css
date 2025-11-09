@@ -199,6 +199,10 @@ td {
   display: block;
 }
 
-.show {
+.btn-dropdown:focus {
+  box-shadow: 0 0 0 .25rem rgba(134, 134, 134, 0.274);
+}
+
+.show-modal {
   display: block;
 }

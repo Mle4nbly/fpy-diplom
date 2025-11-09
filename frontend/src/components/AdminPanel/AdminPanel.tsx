@@ -2,23 +2,18 @@ import { useContext, useEffect, useState } from "react"
 import { useApi } from "../../hooks/useApi"
 import { UsersList } from "./UsersList"
 import { AuthContext } from "../../contexts/AuthContext/AuthContext"
-import type { UserType } from "../../types/types"
+import type { UserType } from "../../types/apiTypes"
+import { UsersProvider } from "../../contexts/UsersContext/UsersProvider"
+import { UsersContext } from "../../contexts/UsersContext/UsersContext"
 
 export const AdminPanel = () => {
   const {token} = useContext(AuthContext)
-  const {getData, sendData} = useApi(token) 
-  
-  const [users, setUsers] = useState<UserType[] | null>(null)
+
+  const {users, deleteUser, changeUserRights, getUsersList} = useContext(UsersContext)
 
   useEffect(() => {
     getUsersList();
   }, [])
-
-  const getUsersList = async () => {
-    const response = await getData('/users');
-
-    if (response) setUsers(response);
-  }
 
   if (!users?.length) return <p>No users...</p>;
 
@@ -28,7 +23,7 @@ export const AdminPanel = () => {
         <h3 className="title">Панель администратора</h3>
       </div>
       <section className="container">
-        <UsersList users={users}/>
+        <UsersList users={users} onChangeRights={changeUserRights} onDelete={deleteUser}/>
       </section>
     </>
   )
