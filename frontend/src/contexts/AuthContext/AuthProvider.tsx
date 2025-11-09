@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useApi } from "../../hooks/useApi";
 
 export const AuthProvider = ({children}: {children: ReactNode}) => { 
   const navigate = useNavigate();
@@ -11,83 +12,61 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     return token ? token : '';
   });
 
-  const [username, setUsername] = useState(() => {
-    const username = localStorage.getItem('username');
+  const {getData, sendData} = useApi(token);
 
-    return username ? username : '';
-  });
+  const [adminRights, setAdminRights] = useState(false);
+
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     if (!token) {
       navigate('/auth');
+      return;
     }
+
+    getMeData();
   }, [token, navigate]);
 
+  const getMeData = async () => {
+    const response = await getData('/users/me');
+
+    if (response) {
+      setUsername(response.username);
+      setAdminRights(response.is_admin);
+    };
+  }
+
   const register = async (username: string, email: string, fullName: string, password: string) => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/users/register/", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username, 
-          email, 
-          full_name: fullName, 
-          password
-        })
-      })
+    const response = await sendData('POST', '/users/register', {username, email, fullName, password})
 
-      if (!response.ok) throw new Error('Ошибка регистрации')
-      const jsonData = await response.json();
-
-      setUsername(jsonData.username);
-      setToken(jsonData.token);
-
-      localStorage.setItem('token', jsonData.token);
-      localStorage.setItem('username', jsonData.username)
-    } catch (error) {
-      console.log(error);
-    }
+    if (response) {
+      setToken(response.token)
+      localStorage.setItem('token', response.token)
+    };
   };
 
   const login = async (username: string, password: string) => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/users/login/", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password
-        })
-      })
+    const response = await sendData('POST', '/users/login', {username, password})    
+    console.log(token);
+    
+    if (response) {
+      setToken(response.token)
+      localStorage.setItem('token', response.token)
+    };
+  };
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error)
-      }
-      const jsonData = await response.json();
+  const logout = async () => {
+    const response = await sendData('POST', '/users/logout')
 
-      setUsername(jsonData.username);
-      setToken(jsonData.token);
-
-      localStorage.setItem('token', jsonData.token);
-      localStorage.setItem('username', jsonData.username)
-    } catch (error) {
-      console.log(error);
+    if (response) {
+      setUsername('');
+      setToken('');
+      localStorage.removeItem('token');
     }
   };
 
-  const logout = () => {
-    setUsername('');
-    setToken('');
-    localStorage.removeItem('token');
-  };
-
   return (
-    <AuthContext.Provider value={{token, username, register, login, logout}}>
+    <AuthContext.Provider value={{token, username, adminRights, register, login, logout}}>
       {children}
     </AuthContext.Provider>
   );

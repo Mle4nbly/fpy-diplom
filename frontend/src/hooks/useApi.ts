@@ -6,6 +6,20 @@ export const useApi = <T extends { id: number }>(token?: string) => {
   const [loading, setLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
+  const getHeaders = (isFormData: boolean) => {
+    const headers = new Headers()
+
+    if (!isFormData) {
+      headers.set('Content-Type', 'application/json')
+    }
+    
+    if (token) {
+      headers.set('Authorization', `Token ${token}`)
+    }
+
+    return headers;
+  }
+
   const getData = async (endpoint: string) => {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
@@ -16,10 +30,7 @@ export const useApi = <T extends { id: number }>(token?: string) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api${endpoint}/`, {
         signal: controller.signal,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Token ${token}`,
-        },
+        headers: getHeaders(false),
       });
 
       if (!response.ok) throw new Error("Ошибка GET-запроса");
@@ -30,7 +41,7 @@ export const useApi = <T extends { id: number }>(token?: string) => {
     } catch (error) {
       if (error instanceof Error && error.name !== "AbortError") {
         setError(error.message);
-        console.log(error)
+        console.log(error);
       }
     } finally {
       setLoading(false);
@@ -47,26 +58,24 @@ export const useApi = <T extends { id: number }>(token?: string) => {
     try {
       let fetchOptions: RequestInit = {
         method,
-        headers: {
-          Authorization: `Token ${token}`,
-        },
+        headers: getHeaders(false)
       };
 
       if (body instanceof FormData) {
         fetchOptions.body = body;
+        fetchOptions.headers = getHeaders(true);
       } else if (body) {
         fetchOptions.body = JSON.stringify(body);
-        (fetchOptions.headers as Record<string, string>)["Content-Type"] = "application/json";
       }
 
       const response = await fetch(`http://localhost:8000/api${endpoint}/`, fetchOptions);
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error)
-      };
+        throw new Error(errorData.error);
+      }
 
-      const textResponse = await response.text()
-      return textResponse ? JSON.parse(textResponse) : 'No body'
+      const textResponse = await response.text();
+      return textResponse ? JSON.parse(textResponse) : "No body";
     } catch (error: unknown) {
       if (error instanceof Error && error.name !== "AbortError") {
         setError(error.message);
@@ -78,7 +87,6 @@ export const useApi = <T extends { id: number }>(token?: string) => {
       setLoading(false);
     }
   };
-
 
   return { data, error, loading, setData, getData, sendData };
 };
