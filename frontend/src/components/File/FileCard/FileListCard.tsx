@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import type { FileStatus } from "../../../types/types"
+import type { FileStatus } from "../../../types/apiTypes"
 import { FileIcon } from "../FileIcon"
 import { FileDropdown } from "../../ui/Dropdown/FileDropdown"
 import { RenameForm } from "../../ui/Forms/RenameForm"

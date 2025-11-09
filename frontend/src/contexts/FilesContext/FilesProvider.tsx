@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useApi } from "../../hooks/useApi";
 import { FilesContext } from "./FilesContext";
-import type { FileStatus, FileType } from "../../types/types";
+import type { FileStatus, FileType } from "../../types/apiTypes";
 
 export const FileProvider = ({children}: {children: ReactNode}) => {
   const token = localStorage.getItem('token') || '';

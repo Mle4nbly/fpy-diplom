@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
-import type { FileStatus } from "../../../types/types"
+import type { FileStatus } from "../../../types/apiTypes"
 import { FileIcon } from "../FileIcon"
 import { FileDropdown } from "../../ui/Dropdown/FileDropdown";
 import { RenameForm } from "../../ui/Forms/RenameForm";
 import { ModalContext } from "../../../contexts/ModalContext/ModalContext";
+import { Dropdown } from "../../ui/Dropdown/Dropdown";
 
 export interface FileGridCardProps {
   id: number,
@@ -25,6 +26,14 @@ export const FileGridCard = ({id, path, name, description, size, status, onDelet
 
   const handleCancel = () => {
     setIsEditing(false)
+  }
+
+  const handleDownload = () => {
+    onDownload(id, name)
+  }
+
+  const handleDelete = () => {
+    onDelete(id)
   }
 
   const handleRename = (newName: string) => {
@@ -67,13 +76,26 @@ export const FileGridCard = ({id, path, name, description, size, status, onDelet
     <div className="grid-container">
       <div className="grid-content border p-2">
         <FileIcon path={path} name={name} view="GRID"/>
-        <FileDropdown 
-          id={id} 
-          onDelete={() => onDelete(id)} 
-          onDownload={() => onDownload(id, name)}
-          onRename={() => setIsEditing(!isEditing)}
-          onEdit={() => openModal('edit', {name, description, onClose: closeModal, onSubmit: handleEdit})}
-          />
+        <Dropdown
+          id={id}
+          items={[
+            {
+              id: 'edit',
+              label: 'Изменить',
+              action: handleEdit
+            },
+            {
+              id: 'download',
+              label: 'Скачать',
+              action: handleDownload
+            },
+            {
+              id: 'delete',
+              label: 'Удалить',
+              action: handleDelete
+            }
+          ]}
+        />
       </div>
       <div className="grid-info">
         {renderFileName()}

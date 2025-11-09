@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { FileType } from "../../types/types";
+import type { FileType } from "../../types/apiTypes";
 
 export type FilesContextType = {
   files: FileType[] | null,

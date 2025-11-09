@@ -8,19 +8,20 @@ export const FileManager = () => {
   const {viewType} = useContext(ViewTypeContext)
   const {files, loading, error, getFilesList, deleteFile, editFile, downloadFile} = useContext(FilesContext);
 
-  if (!files?.length) return <p>No files...</p>;
-
   return (
     <>
       <div className="container container-header">
         <h3 className="title">Все файлы</h3>
       </div>
-      <section className="container">
-        {viewType == "LIST" ?
-          <FilesList files={files} onDownload={downloadFile} onDelete={deleteFile} onEdit={editFile}/> :
-          <FilesGrid files={files} onDownload={downloadFile} onDelete={deleteFile} onEdit={editFile}/>
-        }
-      </section>
+      {!files?.length ?
+        <p>В облаке пока нет файлов</p> :
+        <section className="container">
+          {viewType == "LIST" ?
+            <FilesList files={files} onDownload={downloadFile} onDelete={deleteFile} onEdit={editFile}/> :
+            <FilesGrid files={files} onDownload={downloadFile} onDelete={deleteFile} onEdit={editFile}/>
+          }
+        </section>
+      }
     </>
   )
 }

@@ -5,8 +5,10 @@ import { useContext } from "react";
 import { FilesContext } from "../contexts/FilesContext/FilesContext";
 import { ViewTypeContext } from "../contexts/ViewTypeContext/ViewTypeContext";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext/AuthContext";
 
 export const Header = () => {
+  const {adminRights} = useContext(AuthContext)
   const {uploadFile} = useContext(FilesContext)
   const {viewType, setViewType} = useContext(ViewTypeContext)
 
@@ -18,9 +20,12 @@ export const Header = () => {
           <NavLink to={'/'}>
             <button className="btn btn-outline-secondary ms-3">Главная</button>
           </NavLink>
-          <NavLink to={'/admin'}>
-            <button className="btn btn-outline-secondary ms-3">Панель админа</button>
-          </NavLink>
+          {adminRights ?
+            <NavLink to={'/admin'}>
+              <button className="btn btn-outline-secondary ms-3">Панель админа</button>
+            </NavLink> :
+            ''
+          }
           <ToggleSortingButtons viewType={viewType} setViewType={setViewType}/>
           <AuthButtons />
         </div>

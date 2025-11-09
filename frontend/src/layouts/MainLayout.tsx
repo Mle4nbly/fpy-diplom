@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { FileProvider } from "../contexts/FilesContext/FilesProvider"
 import { ViewTypeProvider } from "../contexts/ViewTypeContext/ViewTypeProvider"
 import { AuthProvider } from "../contexts/AuthContext/AuthProvider"
+import { UsersProvider } from "../contexts/UsersContext/UsersProvider"
 
 export const MainLayout = () => {
   useEffect(() => {
@@ -16,8 +17,10 @@ export const MainLayout = () => {
     <AuthProvider>
       <ViewTypeProvider>
         <FileProvider>
-          <Header />
-          <Outlet />
+          <UsersProvider>
+            <Header />
+            <Outlet />
+          </UsersProvider>
         </FileProvider>
       </ViewTypeProvider>
     </AuthProvider>

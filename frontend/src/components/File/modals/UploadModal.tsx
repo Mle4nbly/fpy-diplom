@@ -17,12 +17,16 @@ export const UploadModal = ({onClose, onSubmit}: UploadModalProps) => {
       return;
     }
 
+    if (!nameValue.trim()) {
+      return;
+    }
+
     onSubmit(nameValue, descriptionValue, file);
   };
 
   return (
     <>
-      <div className="modal show">
+      <div className="modal show-modal">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">

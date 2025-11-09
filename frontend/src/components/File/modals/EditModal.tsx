@@ -13,7 +13,7 @@ export const EditModal = ({name, description, onClose, onSubmit}: EditModalProps
 
   return (
     <>
-      <div className="modal show">
+      <div className="modal show-modal">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
