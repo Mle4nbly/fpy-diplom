@@ -3,11 +3,10 @@ from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
   password = serializers.CharField(write_only=True)
-  is_admin = serializers.BooleanField(read_only=True)
 
   class Meta:
     model = User
-    fields = ['id', 'username', 'password', 'email', 'full_name', 'is_admin']
+    fields = ['id', 'username', 'password', 'email', 'full_name']
 
   def create(self, validated_data):
     password = validated_data.pop('password') 
@@ -16,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
     user.save() 
     
     return user
-  
+
 class UserDetailSerializer(serializers.ModelSerializer):
   class Meta:
     model = User

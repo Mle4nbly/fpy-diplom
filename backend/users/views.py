@@ -32,11 +32,19 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
   def get_queryset(self):
     return User.objects.exclude(pk=self.request.user.pk)
 
+class MeView(generics.RetrieveAPIView):
+  serializer_class = UserDetailSerializer
+  permission_classes = [permissions.IsAuthenticated]
+
+  def get_object(self):
+    return self.request.user
+
 class RegisterView(generics.CreateAPIView):
   serializer_class = UserSerializer
 
   def perform_create(self, serializer):
-    self.user = serializer.save(self.request.user)
+    print(self.request)
+    self.user = serializer.save()
     self.token, _ = Token.objects.get_or_create(user=self.user)
 
   def create(self, request, *args, **kwargs):
@@ -70,7 +78,8 @@ class LoginView(APIView):
         return Response({
             "message": "Login successful.",
             "token": token.key,
-            "username": user.username
+            "username": user.username,
+            "is_admin": user.is_admin
         }, status=status.HTTP_200_OK)
 
 class LogoutView(APIView):
