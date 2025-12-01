@@ -29,13 +29,13 @@ export const FileProvider = ({children}: {children: ReactNode}) => {
     toggleFileStatus(id)
   }
 
-  const uploadFile = async (file: File, fileName: string, description: string | null) => {
+  const uploadFile = async (file: File, fileName: string, description: string) => {
     const formData = new FormData();
     const originalName = `${fileName}.${file.name.split('.')[1]}`
 
     formData.append("file", file);
     formData.append("name", originalName);
-    formData.append("description", `${description}`);
+    formData.append("description", description);
 
     const response = await sendData("POST", "/files", formData);
     if (response) setFiles((prev) => [...prev, response]);

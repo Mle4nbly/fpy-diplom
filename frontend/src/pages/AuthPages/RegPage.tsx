@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 
 export const RegPage = () => {
   const navigate = useNavigate()

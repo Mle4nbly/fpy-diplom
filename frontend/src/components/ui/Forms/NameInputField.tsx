@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-export interface EditingFormProps {
-  initName: string,
+export interface NameInputFieldProps {
+  initValue: string,
   onCancel: () => void,
   onRename: (value: string) => void,
 }
 
-export const RenameForm = ({initName, onCancel, onRename}: EditingFormProps) => {
+export const NameInputField = ({initValue, onCancel, onRename}: NameInputFieldProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [value, setValue] = useState(initName);
+  const [value, setValue] = useState(initValue);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const RenameForm = ({initName, onCancel, onRename}: EditingFormProps) => 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (value == initName) {
+    if (value == initValue) {
       onCancel();
       return;
     } 
@@ -41,7 +41,7 @@ export const RenameForm = ({initName, onCancel, onRename}: EditingFormProps) => 
   return (
     <form onSubmit={handleSubmit}>
       <input
-        className="form-control mt-1 mb-1"
+        className="form-control"
         name="name"
         type="text"
         ref={inputRef}

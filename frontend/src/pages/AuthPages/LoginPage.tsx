@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 
-export const AuthPage = () => {
+export const LoginPage = () => {
   const navigate = useNavigate()
 
   const [validated, setValidated] = useState(false);
@@ -13,7 +13,7 @@ export const AuthPage = () => {
   const {login, token, username} = useContext(AuthContext)
 
   useEffect(() => {
-    if (token && username) navigate('/');
+    if (token && username) navigate('/home');
   }, [token, username])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

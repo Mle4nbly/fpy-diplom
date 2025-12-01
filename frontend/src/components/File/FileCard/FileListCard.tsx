@@ -1,9 +1,9 @@
-import { useContext, useState } from "react"
+import { useRef, useState } from "react"
 import type { FileStatus } from "../../../types/apiTypes"
 import { FileIcon } from "../FileIcon"
-import { FileDropdown } from "../../ui/Dropdown/FileDropdown"
-import { RenameForm } from "../../ui/Forms/RenameForm"
-import { ModalContext } from "../../../contexts/ModalContext/ModalContext"
+import { NameInputField } from "../../UI/Forms/NameInputField"
+import { Dropdown } from "../../UI/Dropdown/Dropdown"
+import { DetailModal } from "../../Modal/DetailModal"
 
 export interface FileListCardProps {
   id: number,
@@ -19,29 +19,54 @@ export interface FileListCardProps {
 }
 
 export const FileListCard = ({id, path, name, description, size, uploadedAt, status, onDelete, onEdit, onDownload}: FileListCardProps) => {
-  const {openModal, closeModal} = useContext(ModalContext)
+  const [dropdownIsOpen, setDropdownIsOpen] = useState(false)
+  const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(false);
+  const btnRef = useRef<HTMLButtonElement | null>(null)
 
-  const handleCancel = () => {
-    setIsEditing(false)
+  const [isRenaming, setIsRenaming] = useState(false);
+
+  const handleOpenDetailModal = () => {
+    setDetailModalIsOpen(true)
+    setDropdownIsOpen(false)
   }
 
-  const handleEdit = (newName: string, newDescription: string | null) => {
-    if (!newDescription) {
-      onEdit(id, newName, null);
-      closeModal();
+  const handleCloseDetailModal = () => {
+    setDetailModalIsOpen(false)
+  }
 
-      return;
-    }
+  const handleRenamingCancel = () => {
+    setIsRenaming(false);
+  }
 
-    onEdit(id, newName, newDescription);
-    closeModal()
-  };
+  const handleRenameFieldOpen = () => {
+    setIsRenaming(true)
+    setDropdownIsOpen(false)
+  }
+
+  const handleDownload = () => {
+    onDownload(id, name);
+
+    setDropdownIsOpen(false);
+  }
+
+  const handleDelete = () => {
+    onDelete(id);
+
+    setDropdownIsOpen(false);
+  }
 
   const handleRename = (newName: string) => {
     onEdit(id, newName, description);
-    setIsEditing(false);
+    setIsRenaming(false);
+  };
+
+  const handleEditDescription = (newDescription: string | null) => {
+    onEdit(id, name, newDescription)
+  }
+
+  const handleEditName = (newName: string) => {
+    onEdit(id, newName, description)
   };
 
   const renderFileName = () => {
@@ -53,8 +78,8 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
       case "DOWNLOADING":
         return <span className="file-name">Загрузка...</span>
       default:
-        return isEditing ? (
-          <RenameForm initName={name} onCancel={handleCancel} onRename={handleRename} />
+        return isRenaming ? (
+          <NameInputField initValue={name} onCancel={handleRenamingCancel} onRename={handleRename} />
         ) : (
           <div className="file-title-container">
             <span className="file-title">{name.split(".")[0]}</span>
@@ -67,7 +92,9 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
     <>
       <tr className="file-row">
         <td className="file-name-cell">
-          <FileIcon path={path} view="LIST" name={name}/>
+          <div className="file-icon-list">
+            <FileIcon path={path} name={name}/>
+          </div>
           {renderFileName()}
         </td>
         <td className="file-uploaded-cell">
@@ -81,15 +108,48 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
         </td>
         <td className="file-size-cell"><span className="m-0">
           {(size / 1024 / 1024).toFixed(2)} MB</span>
-          <FileDropdown 
-            id={id} 
-            onDelete={() => onDelete(id)} 
-            onDownload={() => onDownload(id, name)}
-            onRename={() => setIsEditing(!isEditing)}
-            onEdit={() => openModal('edit', {name, description, onClose: closeModal, onSubmit: handleEdit})}
-          />
+          <button ref={btnRef} type="button" className="btn btn-secondary btn-dropdown" onClick={() => setDropdownIsOpen(true)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-three-dots"
+              viewBox="0 0 16 16"
+            >
+              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+            </svg>
+          </button>
+          {dropdownIsOpen && btnRef ? 
+            <Dropdown
+              btnRef={btnRef}
+              onClose={() => setDropdownIsOpen(false)}
+            >
+              <li>
+                <button className="dropdown-item" onClick={handleOpenDetailModal}>
+                  Изменить
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item" onClick={handleDownload}>
+                  Скачать
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item" onClick={handleRenameFieldOpen}>
+                  Переимновать
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item" onClick={handleDelete}>
+                  Удалить
+                </button>
+              </li>
+            </Dropdown> : ''
+          }
         </td>
       </tr>
+      {detailModalIsOpen && <DetailModal name={name} description={description} path={path} size={size} onClose={handleCloseDetailModal} onDescriptionSubmit={handleEditDescription} onNameSubmit={handleEditName}/>}
     </>
   )  
 }

@@ -6,7 +6,8 @@ class UserSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = ['id', 'username', 'password', 'email', 'full_name']
+    fields = ['id', 'username', 'password', 'email', 'full_name', 'is_admin']
+    read_only_fields = ['is_admin']
 
   def create(self, validated_data):
     password = validated_data.pop('password') 
@@ -19,8 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'username', 'is_admin']
-    read_only_fields = ['username']
+    fields = ['id', 'username', 'email', 'is_admin']
+    read_only_fields = ['username', 'email']
 
 class UserListSerializer(serializers.ModelSerializer):
   files_count = serializers.IntegerField(read_only=True)

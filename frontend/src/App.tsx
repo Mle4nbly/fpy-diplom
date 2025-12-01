@@ -1,39 +1,38 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { HomePage } from "./pages/HomePage";
-import { AuthPage } from "./pages/AuthPage";
-import { RegPage } from "./pages/RegPage";
+import { createBrowserRouter, Navigate, Route, RouterProvider, Routes } from "react-router-dom";
+import { HomePage } from "./pages/HomePage/HomePage";
+import { LoginPage } from "./pages/AuthPages/LoginPage";
+import { RegPage } from "./pages/AuthPages/RegPage";
 
 import './App.css'
 import { MainLayout } from "./layouts/MainLayout";
 import { AuthLayout } from "./layouts/AuthLayout";
-import { ModalProvider } from "./contexts/ModalContext/ModalProvider";
-import { AdminPage } from "./pages/AdminPage";
-
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: '/admin', element: <AdminPage /> }
-    ],
-  },
-  {
-    path: "/auth",
-    element: <AuthLayout />,
-    children: [
-      { index: true, element: <AuthPage /> },
-      { path: '/auth/reg', element: <RegPage /> }
-    ]
-  }
-]);
+import { AdminPage } from "./pages/AdminPages/AdminPage";
+import { AdminFilesPage } from "./pages/AdminPages/AdminFilesPage";
 
 function App() {
   return (
-    <ModalProvider>
-      <RouterProvider router={router}/>
-    </ModalProvider>
+    <Routes>
+
+      <Route element={<AuthLayout/>}>
+        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/reg" element={<RegPage/>}/>
+      </Route>
+
+      <Route element={<MainLayout/>}>
+        <Route path="/home" element={<HomePage/>}/>
+
+        <Route path="/admin" element={<AdminPage/>}>
+          <Route path=":username" element={<AdminFilesPage/>} />
+        </Route>
+      </Route>
+
+      <Route path="/" element={
+        localStorage.getItem("token")
+          ? <Navigate to={"/home"}/>
+          : <Navigate to={"/login"}/>
+      } />
+
+    </Routes>
   )
 }
 

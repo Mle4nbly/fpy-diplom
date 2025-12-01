@@ -5,7 +5,7 @@ export type FilesContextType = {
   files: FileType[] | null,
   loading: boolean,
   error: string | null,
-  uploadFile: (file: File, filename: string, description: string | null) => void,
+  uploadFile: (file: File, filename: string, description: string) => void,
   downloadFile: (id: number, filename: string) => void,
   getFilesList: () => void,
   deleteFile: (id: number) => void,

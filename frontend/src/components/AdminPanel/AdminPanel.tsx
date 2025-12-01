@@ -1,9 +1,6 @@
-import { useContext, useEffect, useState } from "react"
-import { useApi } from "../../hooks/useApi"
+import { useContext, useEffect } from "react"
 import { UsersList } from "./UsersList"
 import { AuthContext } from "../../contexts/AuthContext/AuthContext"
-import type { UserType } from "../../types/apiTypes"
-import { UsersProvider } from "../../contexts/UsersContext/UsersProvider"
 import { UsersContext } from "../../contexts/UsersContext/UsersContext"
 
 export const AdminPanel = () => {

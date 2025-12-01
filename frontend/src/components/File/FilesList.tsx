@@ -1,5 +1,5 @@
-import type { FileType } from "../../../types/apiTypes";
-import { FileListCard } from "../FileCard/FileListCard";
+import type { FileType } from "../../types/apiTypes";
+import { FileListCard } from "./FileCard/FileListCard";
 
 export interface FilesListProps {
   files: FileType[],

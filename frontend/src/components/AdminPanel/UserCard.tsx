@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { UserType } from "../../types/apiTypes"
-import { Dropdown } from "../ui/Dropdown/Dropdown";
+import { Dropdown } from "../UI/Dropdown/Dropdown";
 
 export interface UserCardProps extends UserType {
   onChangeRights: (id: number, newRights: boolean) => void,
@@ -9,6 +9,10 @@ export interface UserCardProps extends UserType {
 
 export const UserCard = ({id, username, files_count, total_size, is_admin, onChangeRights, onDelete}: UserCardProps) => {
   const [adminRights, setAdminRights] = useState(is_admin);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const btnRef = useRef<HTMLButtonElement | null>(null)
 
   const handleChangeRights = () => {
     onChangeRights(id, !adminRights);
@@ -32,20 +36,35 @@ export const UserCard = ({id, username, files_count, total_size, is_admin, onCha
         {total_size ? total_size : '0'}
       </td>
       <td>
-        <Dropdown 
-          id={id} 
-          items={[
-            {
-              id: 'rights', 
-              label: `${adminRights ? 'Ограничить доступ' : 'Предоставить доступ'}`, 
-              action: handleChangeRights},
-            {
-              id: 'delete',
-              label: 'Удалить пользователя',
-              action: handleDelete
-            }
-          ]}
-        />
+        <button ref={btnRef} type="button" className="btn btn-secondary btn-dropdown" onClick={() => setIsDropdownOpen(true)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-three-dots"
+              viewBox="0 0 16 16"
+            >
+              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+            </svg>
+        </button>
+        {isDropdownOpen && btnRef ? 
+          <Dropdown
+            btnRef={btnRef}
+            onClose={() => setIsDropdownOpen(false)}
+          >
+            <li>
+              <button className="dropdown-item" onClick={handleChangeRights}>
+                {adminRights ? 'Ограничить доступ' : 'Предоставить доступ'}
+              </button>
+            </li>
+            <li>
+              <button className="dropdown-item" onClick={handleDelete}>
+                Удалить пользователя
+              </button>
+            </li>
+          </Dropdown> : ''
+        }
       </td>
     </tr>
   )

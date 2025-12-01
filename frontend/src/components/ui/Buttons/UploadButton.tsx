@@ -1,39 +1,38 @@
-import { useContext } from "react"
-import { ModalContext } from "../../../contexts/ModalContext/ModalContext"
+import { useRef } from "react"
 
 export interface UploadButtonProps {
-  onUpload: (file: File, fileName: string, description: string | null) => void
+  onUpload: (file: File, fileName: string, description: string) => void
 }
 
 export const UploadButton = ({onUpload}: UploadButtonProps) => {
-  const {openModal, closeModal} = useContext(ModalContext)
-
-  const handleClick = () => {
-    openModal('upload', {onSubmit: handleSubmit, onClose: handleCancel})
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  
+  const handleAddFile = () => {
+    inputRef.current?.click();
   }
 
-  const handleSubmit = (name: string, description: string | null, file: File) => {
-    onUpload(file, name, description);
-    closeModal()
-  }
+  const handleChangeInputField = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
-  const handleCancel = () => {
-    closeModal();
-  };
+    if (file) {
+      onUpload(file, file.name, '');
+    }
+  }
 
   return (
     <>
       <button
         type="button"
-        className="btn btn-upload btn-outline-secondary d-flex align-items-center p-2"
-        onClick={handleClick}
+        className="btn-upload"
+        onClick={handleAddFile}
         title="Загрузить файл"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-upload m-1" viewBox="0 0 16 16">
-          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-          <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
         </svg>
+        <span >Загрузить</span>
       </button>
+      <input className="d-none" type="file" onChange={handleChangeInputField} ref={inputRef}/>
     </>
   )
 }

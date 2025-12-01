@@ -1,5 +1,5 @@
-import type { FileType } from "../../../types/apiTypes";
-import { FileGridCard } from "../FileCard/FileGridCard";
+import type { FileType } from "../../types/apiTypes";
+import { FileGridCard } from "./FileCard/FileGridCard";
 
 export interface FilesGridProps {
   files: FileType[],

@@ -15,12 +15,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const {getData, sendData} = useApi(token);
 
   const [adminRights, setAdminRights] = useState(false);
-
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
 
   useEffect(() => {
     if (!token) {
-      navigate('/auth');
+      navigate('/login')
       return;
     }
 
@@ -31,13 +31,14 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     const response = await getData('/users/me');
 
     if (response) {
+      setEmail(response.email)
       setUsername(response.username);
       setAdminRights(response.is_admin);
     };
   }
 
   const register = async (username: string, email: string, fullName: string, password: string) => {
-    const response = await sendData('POST', '/users/register', {username, email, fullName, password})
+    const response = await sendData('POST', '/users/register', {username, email, full_name: fullName, password})
 
     if (response) {
       setToken(response.token)
@@ -66,7 +67,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   };
 
   return (
-    <AuthContext.Provider value={{token, username, adminRights, register, login, logout}}>
+    <AuthContext.Provider value={{token, username, email, adminRights, register, login, logout}}>
       {children}
     </AuthContext.Provider>
   );
