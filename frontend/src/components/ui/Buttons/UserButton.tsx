@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../../contexts/AuthContext/AuthContext";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,6 +11,10 @@ export const UserButton = () => {
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false)
 
   const btnRef = useRef<HTMLButtonElement | null>(null)
+
+  useEffect(() => {
+    setDropdownIsOpen(false);
+  }, [url]);
 
   const handleAdminClick = () => {
     setDropdownIsOpen(false);
@@ -39,13 +43,13 @@ export const UserButton = () => {
             </div>
           </li>
           {adminRights ?
-            <button className={url === '/admin' ? "dropdown-btn active" : "dropdown-btn"} onClick={handleAdminClick}>
+            <button className={url === '/admin' ? "dropdown-item active" : "dropdown-item"} onClick={handleAdminClick}>
               Панель админа
             </button> :
             ''
           }
           <li>
-            <button className="dropdown-btn" onClick={handleClickLogout}>
+            <button className="dropdown-item" onClick={handleClickLogout}>
               Выйти
             </button>
           </li>

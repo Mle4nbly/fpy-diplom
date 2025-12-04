@@ -2,7 +2,7 @@ import { useState } from "react"
 
 export interface DescriptionInputFieldProps {
   initValue: string | null,
-  onSubmit: (newDescription: string | null) => void,
+  onSubmit: (newDescription: string) => void,
   onCancel: () => void,
 }
 

@@ -380,11 +380,7 @@ td {
   flex-direction: column;
 }
 
-.dropdown-item.active {
-  background-color: blueviolet;
-}
-
-.dropdown-btn {
+.dropdown-item {
   display: block;
   width: 100%;
   padding: 4px 16px;
@@ -395,8 +391,12 @@ td {
   transition: background-color 0.1s;
 }
 
-.dropdown-btn:hover,
-.dropdown-btn.active {
+.dropdown-item:active,
+.dropdown-item.active {
+  background-color: rgb(124, 124, 124);
+}
+
+.dropdown-item:hover {
   background-color: rgb(124, 124, 124);
 }
 

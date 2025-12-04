@@ -9,12 +9,12 @@ export interface FileListCardProps {
   id: number,
   path: string,
   name: string,
-  description: string | null,
+  description: string,
   size: number,
   uploadedAt: string,
   status?: FileStatus,
   onDelete: (id: number) => void,
-  onEdit: (id: number, name: string, description: string | null) => void,
+  onEdit: (id: number, name: string, description: string) => void,
   onDownload: (id: number, filename: string) => void
 }
 
@@ -61,7 +61,7 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
     setIsRenaming(false);
   };
 
-  const handleEditDescription = (newDescription: string | null) => {
+  const handleEditDescription = (newDescription: string) => {
     onEdit(id, name, newDescription)
   }
 

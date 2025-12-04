@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Route, RouterProvider, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { HomePage } from "./pages/HomePage/HomePage";
 import { LoginPage } from "./pages/AuthPages/LoginPage";
 import { RegPage } from "./pages/AuthPages/RegPage";
@@ -20,10 +20,8 @@ function App() {
 
       <Route element={<MainLayout/>}>
         <Route path="/home" element={<HomePage/>}/>
-
-        <Route path="/admin" element={<AdminPage/>}>
-          <Route path=":username" element={<AdminFilesPage/>} />
-        </Route>
+        <Route path="/admin" element={<AdminPage/>}/>
+        <Route path="/admin/:username" element={<AdminFilesPage/>}/>
       </Route>
 
       <Route path="/" element={

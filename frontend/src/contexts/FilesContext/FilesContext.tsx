@@ -9,7 +9,7 @@ export type FilesContextType = {
   downloadFile: (id: number, filename: string) => void,
   getFilesList: () => void,
   deleteFile: (id: number) => void,
-  editFile: (id: number, newName: string, description: string | null) => void,
+  editFile: (id: number, newName: string, description: string) => void,
 }
 
 export const FilesContext = createContext<FilesContextType>({

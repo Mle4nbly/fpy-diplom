@@ -4,7 +4,7 @@ export interface FileType {
   id: number,
   file: string,
   name: string,
-  description: string | null,
+  description: string,
   size: number
   uploaded_at: string,
   status?: FileStatus,

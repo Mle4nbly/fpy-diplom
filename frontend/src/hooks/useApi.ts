@@ -68,8 +68,6 @@ export const useApi = <T extends { id: number }>(token?: string) => {
         fetchOptions.body = JSON.stringify(body);
       }
 
-      console.log(fetchOptions);
-      
       const response = await fetch(`http://localhost:8000/api${endpoint}/`, fetchOptions);
       if (!response.ok) {
         const errorData = await response.json();

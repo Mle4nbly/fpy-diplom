@@ -12,14 +12,12 @@ export interface DetailModalProps {
   size: number,
   onClose: () => void,
   onNameSubmit: (newName: string) => void,
-  onDescriptionSubmit: (newDescription: string | null) => void
+  onDescriptionSubmit: (newDescription: string) => void
 }
 
 export const DetailModal = ({name, size, path, description, onClose, onDescriptionSubmit, onNameSubmit}: DetailModalProps) => {
   const btnRef = useRef<HTMLButtonElement | null>(null)
 
-  const [nameValue, setNameValue] = useState(name);
-  const [descriptionValue, setDescriptionValue] = useState<string | null>(description);
   const [isEditDescription, setIsEditDescription] = useState(false);
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
@@ -33,7 +31,7 @@ export const DetailModal = ({name, size, path, description, onClose, onDescripti
     setIsEditDescription(false);
   }
 
-  const handleDescriptionFieldSubmit = (newDescription: string | null) => {
+  const handleDescriptionFieldSubmit = (newDescription: string) => {
     onDescriptionSubmit(newDescription);
     setIsEditDescription(false);
   }
@@ -112,7 +110,7 @@ export const DetailModal = ({name, size, path, description, onClose, onDescripti
                             </button>
                           </li>
                           <li>
-                            <button className="dropdown-item" onClick={() => {onDescriptionSubmit(null)}}>
+                            <button className="dropdown-item" onClick={() => {onDescriptionSubmit('')}}>
                               Удалить
                             </button>
                           </li>

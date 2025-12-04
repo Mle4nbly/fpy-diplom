@@ -4,7 +4,7 @@ import { FileListCard } from "./FileCard/FileListCard";
 export interface FilesListProps {
   files: FileType[],
   onDelete: (id: number) => void,
-  onEdit: (id: number, newName: string, description: string | null) => void,
+  onEdit: (id: number, newName: string, description: string) => void,
   onDownload: (id: number, filename: string) => void
 }
 
