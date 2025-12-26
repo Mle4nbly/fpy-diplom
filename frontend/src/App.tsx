@@ -8,6 +8,7 @@ import { MainLayout } from "./layouts/MainLayout";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { AdminPage } from "./pages/AdminPages/AdminPage";
 import { AdminFilesPage } from "./pages/AdminPages/AdminFilesPage";
+import { ShareFilePage } from "./pages/ShareFilePage/ShareFilePage";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
         <Route path="/admin" element={<AdminPage/>}/>
         <Route path="/admin/:username" element={<AdminFilesPage/>}/>
       </Route>
+
+      <Route element={<ShareFilePage/>} path="/s/:token/:filename"/>
 
       <Route path="/" element={
         localStorage.getItem("token")

@@ -11,10 +11,19 @@ export const UsersList = ({users, onChangeRights, onDelete}: UsersListProps) => 
   return (
     <table className="table">
       <thead>
-        <tr>
-          <th>Имя пользователя</th>
-          <th>Количество файлов</th>
-          <th>Размер файлов</th>
+        <tr className="header-row">
+          <th className="cell-container">
+            <span className="cell-content">Имя</span>
+          </th>
+          <th className="cell-container col-uploaded">
+            <span className="cell-content">Загружено</span>
+          </th>
+          <th className="cell-container col-size">
+            <span className="cell-content">Размер</span>
+          </th>
+          <th className="cell-container col-actions">
+            <span className="cell-content cell-content--end">Действия</span>
+          </th>
         </tr>
       </thead>
       <tbody>

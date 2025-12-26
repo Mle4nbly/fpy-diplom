@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import type { FileStatus, FileType } from "../types/apiTypes"
 import { useApi } from "./useApi"
 
-export const useUserFiles = (token: string, username?: string) => {
+export const useUserFiles = (token?: string, username?: string) => {
   const {getData, sendData, error, loading} = useApi(token)
 
   const [baseUrl, setBaseUrl] = useState(username ? `/files/${username}` : '/files')
@@ -40,7 +40,7 @@ export const useUserFiles = (token: string, username?: string) => {
 
     if (response) {
       setFiles((prev) => 
-        prev.map((f) => (f.id == id ? {...f, name, description} : f))
+        prev.map((f) => (f.id == id ? {...f, original_name: name, description} : f))
       )
     }
     toggleFileStatus(id)

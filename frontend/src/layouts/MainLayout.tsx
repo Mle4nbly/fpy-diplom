@@ -12,8 +12,12 @@ export const MainLayout = () => {
       <ViewTypeProvider>
         <FileProvider>
           <UsersProvider>
-            <Header />
-            <Outlet />
+            <main>
+              <div className="home-page">
+                <Header />
+                <Outlet />
+              </div>
+            </main>
           </UsersProvider>
         </FileProvider>
       </ViewTypeProvider>

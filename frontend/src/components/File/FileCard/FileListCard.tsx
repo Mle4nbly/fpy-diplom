@@ -1,26 +1,34 @@
 import { useRef, useState } from "react"
-import type { FileStatus } from "../../../types/apiTypes"
-import { FileIcon } from "../FileIcon"
+import type { FileStatus, FileType } from "../../../types/apiTypes"
+import { FilePreview } from "../FilePreview"
 import { NameInputField } from "../../UI/Forms/NameInputField"
 import { Dropdown } from "../../UI/Dropdown/Dropdown"
 import { DetailModal } from "../../Modal/DetailModal"
+import { ShareModal } from "../../Modal/ShareModal"
 
-export interface FileListCardProps {
-  id: number,
-  path: string,
-  name: string,
-  description: string,
-  size: number,
-  uploadedAt: string,
+export interface FileListCardProps extends FileType {
   status?: FileStatus,
   onDelete: (id: number) => void,
   onEdit: (id: number, name: string, description: string) => void,
   onDownload: (id: number, filename: string) => void
 }
 
-export const FileListCard = ({id, path, name, description, size, uploadedAt, status, onDelete, onEdit, onDownload}: FileListCardProps) => {
+export const FileListCard = ({
+    id, 
+    file: path, 
+    original_name: fileName, 
+    description, 
+    size, 
+    uploaded_at: uploadedAt, 
+    share_link: shareLink, 
+    status, 
+    onDelete, 
+    onEdit, 
+    onDownload
+  }: FileListCardProps) => {
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false)
   const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
+  const [shareModalIsOpen, setShareModalIsOpen] = useState(false)
 
   const btnRef = useRef<HTMLButtonElement | null>(null)
 
@@ -31,12 +39,9 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
     setDropdownIsOpen(false)
   }
 
-  const handleCloseDetailModal = () => {
-    setDetailModalIsOpen(false)
-  }
-
-  const handleRenamingCancel = () => {
-    setIsRenaming(false);
+  const handleOpenShareModal = () => {
+    setShareModalIsOpen(true)
+    setDropdownIsOpen(false)
   }
 
   const handleRenameFieldOpen = () => {
@@ -45,7 +50,7 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
   }
 
   const handleDownload = () => {
-    onDownload(id, name);
+    onDownload(id, fileName);
 
     setDropdownIsOpen(false);
   }
@@ -62,7 +67,7 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
   };
 
   const handleEditDescription = (newDescription: string) => {
-    onEdit(id, name, newDescription)
+    onEdit(id, fileName, newDescription)
   }
 
   const handleEditName = (newName: string) => {
@@ -72,84 +77,87 @@ export const FileListCard = ({id, path, name, description, size, uploadedAt, sta
   const renderFileName = () => {
     switch (status) {
       case "EDITING":
-        return <span className="file-name">Переименование...</span>
+        return <span>Переименование...</span>
       case "DELETING":
-        return <span className="file-name">Удаление...</span>
+        return <span>Удаление...</span>
       case "DOWNLOADING":
-        return <span className="file-name">Загрузка...</span>
+        return <span>Загрузка...</span>
       default:
         return isRenaming ? (
-          <NameInputField initValue={name} onCancel={handleRenamingCancel} onRename={handleRename} />
+          <NameInputField initValue={fileName} onCancel={() => setIsRenaming(false)} onRename={handleRename} />
         ) : (
-          <div className="file-title-container">
-            <span className="file-title">{name.split(".")[0]}</span>
-          </div>
+          <span style={{fontWeight: 500, color: '#333333'}}>{fileName.split(".")[0]}</span>
         )
     }
   }
 
   return (
     <>
-      <tr className="file-row">
-        <td className="file-name-cell">
-          <div className="file-icon-list">
-            <FileIcon path={path} name={name}/>
+      <tr className="body-row">
+        <td className="cell-container ">
+          <div className="cell-content">
+            <div className="file-preview file-preview--list">
+              <FilePreview path={path} name={fileName}/>
+            </div>
+            {renderFileName()}
           </div>
-          {renderFileName()}
         </td>
-        <td className="file-uploaded-cell">
-          {new Date(uploadedAt).toLocaleString('ru-RU', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
+        <td className="cell-container">
+          <div className="cell-content">
+            {new Date(uploadedAt).toLocaleString('ru-RU', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </div>
         </td>
-        <td className="file-size-cell"><span className="m-0">
-          {(size / 1024 / 1024).toFixed(2)} MB</span>
-          <button ref={btnRef} type="button" className="btn btn-secondary btn-dropdown" onClick={() => setDropdownIsOpen(true)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-three-dots"
-              viewBox="0 0 16 16"
-            >
-              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
-            </svg>
-          </button>
-          {dropdownIsOpen && btnRef ? 
-            <Dropdown
-              btnRef={btnRef}
-              onClose={() => setDropdownIsOpen(false)}
-            >
-              <li>
-                <button className="dropdown-item" onClick={handleOpenDetailModal}>
-                  Изменить
-                </button>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={handleDownload}>
-                  Скачать
-                </button>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={handleRenameFieldOpen}>
-                  Переимновать
-                </button>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={handleDelete}>
-                  Удалить
-                </button>
-              </li>
-            </Dropdown> : ''
-          }
+        <td className="cell-container">
+          <div className="cell-content">
+            <span>{(size / 1024 / 1024).toFixed(2)} MB</span>
+          </div>
+        </td>
+        <td className="cell-container">
+          <div className="cell-content cell-content--end">
+            <button ref={btnRef} type="button" className="btn btn-circle" onClick={() => setDropdownIsOpen(true)}>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+              </svg>
+            </button>
+          </div>
         </td>
       </tr>
-      {detailModalIsOpen && <DetailModal name={name} description={description} path={path} size={size} onClose={handleCloseDetailModal} onDescriptionSubmit={handleEditDescription} onNameSubmit={handleEditName}/>}
+      {dropdownIsOpen && btnRef ? 
+        <Dropdown
+          buttonRef={btnRef}
+          onClose={() => setDropdownIsOpen(false)}
+        >
+          <li className="dropdown-section">
+            <button className="dropdown-item" onClick={handleOpenDetailModal}>
+              Изменить
+            </button>
+            <button className="dropdown-item" onClick={handleRenameFieldOpen}>
+              Переимновать
+            </button>
+          </li>
+          <li>
+            <button className="dropdown-item" onClick={handleDownload}>
+              Скачать
+            </button>
+            <button className="dropdown-item" onClick={handleOpenShareModal}>
+              Поделиться
+            </button>
+          </li>
+          <li className="dropdown-footer">
+            <button className="dropdown-item" onClick={handleDelete}>
+              Удалить
+            </button>
+          </li>
+        </Dropdown> : ''
+      }
+      {shareModalIsOpen && <ShareModal fileName={fileName} shareLink={shareLink} onClose={() => setShareModalIsOpen(false)}/>}
+      {detailModalIsOpen && <DetailModal name={fileName} description={description} path={path} size={size} onClose={() => setDetailModalIsOpen(false)} onDescriptionSubmit={handleEditDescription} onNameSubmit={handleEditName}/>}
     </>
   )  
 }

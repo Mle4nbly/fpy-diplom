@@ -12,7 +12,7 @@ export const UserCard = ({id, username, files_count, total_size, is_admin, onCha
   const [adminRights, setAdminRights] = useState(is_admin);
   const navigate = useNavigate()
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [dropdownIsOpen, setDropdownIsOpen] = useState(false)
 
   const btnRef = useRef<HTMLButtonElement | null>(null)
 
@@ -26,53 +26,60 @@ export const UserCard = ({id, username, files_count, total_size, is_admin, onCha
     onDelete(id)
   }
 
+  const renderCountFileValue = (filesCount: number) => {
+    if (filesCount >= 5 || !filesCount) return `${filesCount} файлов`
+    if (filesCount == 1) return `${filesCount} файл`
+    if (filesCount < 5) return `${filesCount} файла`
+  } 
+
   return (
-    <tr className="file-row">
-      <td className="user-name-cell">
-        {`${username}`} <span style={{color: '#ff7878', fontWeight: '600'}}>{is_admin ? 'Админ' : ''}</span>
-      </td>
-      <td className="user-files-cell">
-        {files_count}
-      </td>
-      <td className="user-size-cell">
-        {total_size ? `${(total_size / 1024 / 1024).toFixed(2)} MB` : '0 MB'}
-      </td>
-      <td>
-        <button ref={btnRef} type="button" className="btn btn-secondary btn-dropdown" onClick={() => setIsDropdownOpen(true)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-three-dots"
-              viewBox="0 0 16 16"
-            >
-              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
-            </svg>
-        </button>
-        {isDropdownOpen && btnRef ? 
-          <Dropdown
-            btnRef={btnRef}
-            onClose={() => setIsDropdownOpen(false)}
-          >
-            <li>
-              <button className="dropdown-item" onClick={handleChangeRights}>
-                {adminRights ? 'Ограничить доступ' : 'Предоставить доступ'}
-              </button>
-            </li>
-            <li>
-              <button className="dropdown-item" onClick={handleDelete}>
-                Удалить пользователя
-              </button>
-            </li>
-            <li>
-              <button className="dropdown-item" onClick={() => navigate(`/admin/${username}`)}>
-                Посмотреть хранилище
-              </button>
-            </li>
-          </Dropdown> : ''
-        }
-      </td>
-    </tr>
+    <>
+      <tr className="body-row">
+        <td className="cell-container">
+          <div className="cell-content">
+            {`${username}`} <span style={{color: '#ff7878', fontWeight: '600'}}>{is_admin ? 'Админ' : ''}</span>
+          </div>
+        </td>
+        <td className="cell-container">
+          <div className="cell-content">
+            <span>{renderCountFileValue(files_count)}</span>
+          </div>
+        </td>
+        <td className="cell-container">
+          <div className="cell-content">
+            <span>{total_size ? `${(total_size / 1024 / 1024).toFixed(2)} MB` : '0 MB'}</span>
+          </div>
+        </td>
+        <td className="cell-container">
+          <div className="cell-content cell-content--end">
+            <button ref={btnRef} type="button" className="btn btn-circle" onClick={() => setDropdownIsOpen(true)}>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      {dropdownIsOpen && btnRef ? 
+        <Dropdown
+          buttonRef={btnRef}
+          onClose={() => setDropdownIsOpen(false)}
+        >
+          <li>
+            <button className="dropdown-item" onClick={handleChangeRights}>
+              {adminRights ? 'Ограничить доступ' : 'Предоставить доступ'}
+            </button>
+            <button className="dropdown-item" onClick={() => navigate(`/admin/${username}`)}>
+              Посмотреть хранилище
+            </button>
+          </li>
+          <li className="dropdown-footer">
+            <button className="dropdown-item" onClick={handleDelete}>
+              Удалить пользователя
+            </button>
+          </li>
+        </Dropdown> : ''
+      }
+    </>
   )
 } 

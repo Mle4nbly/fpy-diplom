@@ -1,11 +1,8 @@
 import { useContext, useEffect } from "react"
 import { UsersList } from "./UsersList"
-import { AuthContext } from "../../contexts/AuthContext/AuthContext"
 import { UsersContext } from "../../contexts/UsersContext/UsersContext"
 
 export const AdminPanel = () => {
-  const {token} = useContext(AuthContext)
-
   const {users, deleteUser, changeUserRights, getUsersList} = useContext(UsersContext)
 
   useEffect(() => {
@@ -15,13 +12,13 @@ export const AdminPanel = () => {
   if (!users?.length) return <p>No users...</p>;
 
   return (
-    <>
-      <div className="container container-header">
+    <section className="page-content-section">
+      <div className="title-container">
         <h3 className="title">Панель администратора</h3>
       </div>
-      <section className="container">
+      <div className="content-container">
         <UsersList users={users} onChangeRights={changeUserRights} onDelete={deleteUser}/>
-      </section>
-    </>
+      </div>
+    </section>
   )
 }

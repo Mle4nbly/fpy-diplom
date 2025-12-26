@@ -19,8 +19,8 @@ export const DescriptionInputField = ({onSubmit, onCancel, initValue}: Descripti
         placeholder="Введите описание"
       />
       <div className="field-actions">
-        <button className="btn-cancel" onClick={onCancel}>Отменить</button>
-        <button className="btn-submit" onClick={() => onSubmit(value)} type="submit">Сохранить</button>
+        <button className="btn btn-text btn-light" onClick={onCancel}>Отменить</button>
+        <button className="btn btn-text btn-light" onClick={() => onSubmit(value)} type="submit">Сохранить</button>
       </div>
     </div>
   )

@@ -19,11 +19,11 @@ export const FileBrowser = ({
 }: FileBrowserProps) => {
 
   return (
-    <section className="container">
+    <>
       {viewType == "LIST" ?
         <FilesList files={files} onDownload={onDownload} onDelete={onDelete} onEdit={onEdit}/> :
         <FilesGrid files={files} onDownload={onDownload} onDelete={onDelete} onEdit={onEdit}/>
       }
-    </section>
+    </>
   )
 }

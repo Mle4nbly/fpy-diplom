@@ -5,17 +5,13 @@ import { FilesContext } from "../contexts/FilesContext/FilesContext";
 import { HomeButton } from "../components/UI/Buttons/HomeButton";
 
 export const Header = () => {
-  const {uploadFile} = useContext(FilesContext)
 
   return (
-    <header className="container">
-      <nav className="navbar navbar-expand-sm navbar-light">
-        <div className="collapse navbar-collapse" id="navbarMain">
-          <UploadButton onUpload={uploadFile}/>
-          <HomeButton />
-          <UserButton/>
-        </div>
-      </nav>
+    <header className="page-header-section">
+      <div className="page-header-container">
+        <HomeButton/>
+        <UserButton/>
+      </div>
     </header>
   );
 }

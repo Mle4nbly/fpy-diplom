@@ -10,16 +10,18 @@ export interface FilesGridProps {
 
 export const FilesGrid = ({files, onDelete, onEdit, onDownload}: FilesGridProps) => {
   return (
-    <div className="files-grid">
+    <div className="grid-container">
     {files.map((file) => (
         <FileGridCard
           key={file.id}
           id={file.id}
-          path={file.file}
-          name={file.name}
+          file={file.file}
+          original_name={file.original_name}
           description={file.description}
           size={file.size}
-          uploadedAt={file.uploaded_at}
+          uploaded_at={file.uploaded_at}
+          last_download_at={file.last_download_at}
+          share_link={file.share_link}
           status={file.status}
           onDelete={onDelete}
           onDownload={onDownload}

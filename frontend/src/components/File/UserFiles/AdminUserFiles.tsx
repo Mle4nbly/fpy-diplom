@@ -18,18 +18,20 @@ export const AdminUserFiles = () => {
   const {files, uploadFile, deleteFile, editFile, downloadFile} = useUserFiles(token, username)
 
   return (
-    <>
-      <div className="container container-title">
+    <section className="page-content-section">
+      <div className="title-container">
         <h3 className="title">Хранилище пользователя <span style={{color: 'red'}}>{username}</span></h3>
       </div>
-      <header className="container header-container">
+      <header className="header-container">
         <UploadButton onUpload={uploadFile}/>
         <ToggleSortingButtons />
       </header>
-      {!files?.length ?
-        <p>В облаке пока нет файлов</p> :
-        <FileBrowser viewType={viewType} files={files} onDelete={deleteFile} onEdit={editFile} onDownload={downloadFile}/>
-      }
-    </>
+      <div className="content-container">
+        {!files?.length ?
+          <p>В облаке пока нет файлов</p> :
+          <FileBrowser viewType={viewType} files={files} onDelete={deleteFile} onEdit={editFile} onDownload={downloadFile}/>
+        }
+      </div>
+    </section>
   )
 }

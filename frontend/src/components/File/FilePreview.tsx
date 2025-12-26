@@ -5,7 +5,7 @@ export interface FileIconProps {
   name: string,
 }
 
-export const FileIcon = ({ path, name }: FileIconProps) => {
+export const FilePreview = ({ path, name }: FileIconProps) => {
   const type = getFileType(path)
 
   return (

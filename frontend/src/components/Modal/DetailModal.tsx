@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { FileIcon } from "../File/FileIcon";
+import { FilePreview } from "../File/FilePreview";
 import { createPortal } from "react-dom";
 import { DescriptionInputField } from "../UI/Forms/DescriptionInputField";
 import { Dropdown } from "../UI/Dropdown/Dropdown";
@@ -57,30 +57,38 @@ export const DetailModal = ({name, size, path, description, onClose, onDescripti
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={onClose}></button>
-                <div className="title-container">
-                  <div className="modal-title">
-                    <div className="file-title">
+                <div className="actions-group">
+                  <button type="button" className="btn btn-circle" data-bs-dismiss="modal" aria-label="Close" onClick={onClose}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                      <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                    </svg>
+                  </button>
+                  <div className="file-info">
                       {isRenaming ?
                         <NameInputField initValue={name} onCancel={handleNameFieldCancel} onRename={handleNameFieldSubmit} /> : 
                         <>
-                          <span>{name.split(".")[0]}</span>
-                          <button onClick={handleOpenNameField} className="btn-rename">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                          <span style={{
+                            fontSize: '20px',
+                            fontWeight: '600'
+                          }}>{name.split(".")[0]}</span>
+                          {/* <button onClick={handleOpenNameField} className="btn btn-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24px" height="24px">
                               <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
                             </svg>
-                          </button>
+                          </button> */}
                         </>
                       }
-                    </div>
+                      <small>{name.split('.').pop()?.toUpperCase()} • {(size / 1024 / 1024).toFixed(2)} MB</small>
                   </div>
-                  <small className="d-block">{name.split('.').pop()?.toUpperCase()} • {(size / 1024 / 1024).toFixed(2)} MB</small>
+                </div>
+                <div className="actions-group">
+
                 </div>
               </div>
               <div className="modal-preview">
-                <FileIcon path={path} name={name}/>
+                <FilePreview path={path} name={name}/>
               </div>
-              <div className="modal-body">
+              <div className="modal-footer">
                 <div className="description-container">
                   {isEditDescription && 
                     <DescriptionInputField initValue={description} onSubmit={handleDescriptionFieldSubmit} onCancel={handleDescriptionFieldCancel}/>
@@ -89,38 +97,16 @@ export const DetailModal = ({name, size, path, description, onClose, onDescripti
                     <>
                       <div className="description-field">
                         <span>{description}</span>
-                        <button ref={btnRef} type="button" className="btn btn-secondary btn-dropdown" onClick={() => setDropdownIsOpen(true)}>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            fill="currentColor"
-                            className="bi bi-three-dots"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+                        <button ref={btnRef} type="button" className="btn btn-circle" onClick={() => setDropdownIsOpen(true)}>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                            <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
                           </svg>
                         </button>
                       </div>
-                      {dropdownIsOpen ? 
-                        <Dropdown btnRef={btnRef} onClose={() => {setDropdownIsOpen(false)}}>
-                          <li>
-                            <button className="dropdown-item" onClick={handleOpenDescriptionField}>
-                              Изменить
-                            </button>
-                          </li>
-                          <li>
-                            <button className="dropdown-item" onClick={() => {onDescriptionSubmit('')}}>
-                              Удалить
-                            </button>
-                          </li>
-                        </Dropdown> :
-                        ''
-                      }
                     </>
                   }
                   { !description && !isEditDescription &&  
-                    <button className="btn-upload" onClick={handleOpenDescriptionField}>Добавить описание</button>
+                    <button className="btn btn-text btn-dark" onClick={handleOpenDescriptionField}>Добавить описание</button>
                   }
                 </div>   
               </div>
@@ -128,6 +114,21 @@ export const DetailModal = ({name, size, path, description, onClose, onDescripti
           </div>
         </div>
         <div className="modal-backdrop fade show"></div>
+        {dropdownIsOpen ? 
+          <Dropdown buttonRef={btnRef} onClose={() => {setDropdownIsOpen(false)}}>
+            <li>
+              <button className="dropdown-item" onClick={handleOpenDescriptionField}>
+                Изменить
+              </button>
+            </li>
+            <li>
+              <button className="dropdown-item" onClick={() => {onDescriptionSubmit('')}}>
+                Удалить
+              </button>
+            </li>
+          </Dropdown> :
+          ''
+        }
       </>,
       document.body
     )

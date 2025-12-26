@@ -1,6 +1,7 @@
-
 import { useEffect, useRef, type ReactNode } from "react"
 import { createPortal } from "react-dom"
+import { usePopperDropdown } from "../../../hooks/usePopperDropdown";
+import { createPopper } from "@popperjs/core";
 
 
 export type DropdownItemType = {
@@ -11,57 +12,79 @@ export type DropdownItemType = {
 
 export interface DropdownProps {
   children: ReactNode,
-  btnRef: React.RefObject<HTMLButtonElement | null>,
+  buttonRef: React.RefObject<HTMLButtonElement | null>,
   onClose: () => void;
 }
 
-export const Dropdown = ({children, btnRef, onClose}: DropdownProps) => {
+export const Dropdown = ({children, buttonRef, onClose}: DropdownProps) => {
   const dropdownRef = useRef<HTMLUListElement | null>(null)
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
-    }
+    };
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        onClose();
+      const target = e.target as Node;
+      if (dropdownRef.current?.contains(target)) {
+        return;
       }
-    }
+      onClose();
+    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
+  })
 
-  }, [onClose])
+  useEffect(() => {
+    if (buttonRef.current && dropdownRef.current) {
+      const popperInstance = createPopper(
+        buttonRef.current,
+        dropdownRef.current,
+        {
+          placement: 'bottom-start',
+          modifiers: [
+            { 
+              name: 'offset', 
+              options: { 
+                offset: [0, 4] 
+              } 
+            },
+            {
+              name: 'flip',
+              enabled: true,
+              options: {
+                padding: 5,
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                boundary: 'viewport',
+              },
+            }
+          ]
+        }
+      );
 
-  const rect = btnRef?.current?.getBoundingClientRect();
+      return () => popperInstance.destroy();
+    }
+  }, [buttonRef, dropdownRef]);
 
   return createPortal(
-    <>
-      <div 
-        className="dropdown-overlay position-fixed top-0 start-0 w-100 h-100" 
-        onClick={onClose}
-        style={{zIndex: 1999}}
-      >
-      </div>
-      <ul 
-        className="dropdown-menu dropdown-menu-dark"
-        ref={dropdownRef}
-        style={{
-          top: `${(rect?.bottom ?? 0) + 5}px`,
-          left: rect?.left
-        }}
-      >
-        {children}
-      </ul>
-    </>,
+    <ul 
+      className="dropdown-menu"
+      ref={dropdownRef}
+    >
+      {children}
+    </ul>,
     document.body
   )
 } 

@@ -3,10 +3,12 @@ export type FileStatus = "DOWNLOADING" | "DELETING" | "EDITING";
 export interface FileType {
   id: number,
   file: string,
-  name: string,
+  original_name: string,
   description: string,
   size: number
   uploaded_at: string,
+  last_download_at: string,
+  share_link: string,
   status?: FileStatus,
 }
 
