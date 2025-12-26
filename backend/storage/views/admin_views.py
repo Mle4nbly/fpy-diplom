@@ -59,5 +59,5 @@ class AdminFileDownloadView(APIView):
     return FileResponse(
       open(file_path, 'rb'),
       as_attachment=True,
-      filename=file_obj.name
+      filename=file_obj.original_name
     )

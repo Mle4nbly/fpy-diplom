@@ -6,6 +6,7 @@ from ..models import User, File
 from ..serializers import FileSerializer
 import os
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 class FilesListCreateView(generics.ListCreateAPIView):
   serializer_class = FileSerializer
@@ -41,8 +42,37 @@ class FileDownloadView(APIView):
         "detail": "The file is gone."
       }, status=status.HTTP_410_GONE)
 
+    file_obj.last_download_at = timezone.now()
+    file_obj.save(update_fields=['last_download_at'])
+
     return FileResponse(
       open(file_path, 'rb'),
       as_attachment=True,
-      filename=file_obj.name
+      filename=file_obj.original_name
     )
+
+class ShareFileDownloadView(APIView):
+  def get(self, request, token):
+    file_obj = get_object_or_404(File, share_link=token)
+
+    file_path = file_obj.file.path
+
+    if not os.path.exists(file_path):
+        return Response({"detail": "File not found"}, status=status.HTTP_410_GONE)
+
+    file_obj.last_download_at = timezone.now()
+    file_obj.save(update_fields=['last_download_at'])
+
+    return FileResponse(
+      open(file_path, 'rb'),
+      as_attachment=True,
+      filename=file_obj.original_name
+    )
+  
+class ShareFileDetailView(APIView):
+  def get(self, request, token):
+    file_obj = get_object_or_404(File, share_link=token)
+
+    serializer = FileSerializer(file_obj)
+
+    return Response(serializer.data)

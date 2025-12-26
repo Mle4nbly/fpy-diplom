@@ -5,4 +5,4 @@ class FileSerializer(serializers.ModelSerializer):
   class Meta:
     model = File
     fields = '__all__'
-    read_only_fields = ['id', 'user', 'size', 'uploaded_at']
+    read_only_fields = ['id', 'user', 'size', 'uploaded_at', 'last_download_at', 'share_link']
