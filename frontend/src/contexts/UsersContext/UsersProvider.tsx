@@ -22,7 +22,7 @@ export const UsersProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const changeUserRights = async (id: number, newRights: boolean) => {
-    const response = await sendData('PUT', `/users/${id}`, { is_admin: newRights });
+    const response = await sendData('PUT', `/users/${id}`, JSON.stringify({ is_admin: newRights }));
 
     if (response) {
       setUsers((prev) => prev?.map((u) => (u.id == id ? { ...u, is_admin: newRights } : u)));
