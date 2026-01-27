@@ -1,23 +1,21 @@
-import { useEffect, useRef, type ReactNode } from "react"
-import { createPortal } from "react-dom"
-import { usePopperDropdown } from "../../../hooks/usePopperDropdown";
-import { createPopper } from "@popperjs/core";
+import { useEffect, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { createPopper } from '@popperjs/core';
 
-
-export type DropdownItemType = {
-  id: string,
-  label: string,
-  action: (...args: any) => void
-}
+export type DropdownItemType<TArgs extends unknown[] = []> = {
+  id: string;
+  label: string;
+  action: (...args: TArgs) => void;
+};
 
 export interface DropdownProps {
-  children: ReactNode,
-  buttonRef: React.RefObject<HTMLButtonElement | null>,
+  children: ReactNode;
+  buttonRef: React.RefObject<HTMLButtonElement | null>;
   onClose: () => void;
 }
 
-export const Dropdown = ({children, buttonRef, onClose}: DropdownProps) => {
-  const dropdownRef = useRef<HTMLUListElement | null>(null)
+export const Dropdown = ({ children, buttonRef, onClose }: DropdownProps) => {
+  const dropdownRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,51 +38,44 @@ export const Dropdown = ({children, buttonRef, onClose}: DropdownProps) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('mousedown', handleClickOutside);
-    }
-  })
+    };
+  });
 
   useEffect(() => {
     if (buttonRef.current && dropdownRef.current) {
-      const popperInstance = createPopper(
-        buttonRef.current,
-        dropdownRef.current,
-        {
-          placement: 'bottom-start',
-          modifiers: [
-            { 
-              name: 'offset', 
-              options: { 
-                offset: [0, 4] 
-              } 
+      const popperInstance = createPopper(buttonRef.current, dropdownRef.current, {
+        placement: 'bottom-start',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 4],
             },
-            {
-              name: 'flip',
-              enabled: true,
-              options: {
-                padding: 5,
-              },
+          },
+          {
+            name: 'flip',
+            enabled: true,
+            options: {
+              padding: 5,
             },
-            {
-              name: 'preventOverflow',
-              options: {
-                boundary: 'viewport',
-              },
-            }
-          ]
-        }
-      );
+          },
+          {
+            name: 'preventOverflow',
+            options: {
+              boundary: 'viewport',
+            },
+          },
+        ],
+      });
 
       return () => popperInstance.destroy();
     }
   }, [buttonRef, dropdownRef]);
 
   return createPortal(
-    <ul 
-      className="dropdown-menu"
-      ref={dropdownRef}
-    >
+    <ul className="dropdown-menu" ref={dropdownRef}>
       {children}
     </ul>,
-    document.body
-  )
-} 
+    document.body,
+  );
+};

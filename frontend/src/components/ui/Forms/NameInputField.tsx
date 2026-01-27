@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 export interface NameInputFieldProps {
-  initValue: string,
-  onCancel: () => void,
-  onRename: (value: string) => void,
+  initValue: string;
+  onCancel: () => void;
+  onRename: (value: string) => void;
 }
 
-export const NameInputField = ({initValue, onCancel, onRename}: NameInputFieldProps) => {
+export const NameInputField = ({ initValue, onCancel, onRename }: NameInputFieldProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState(initValue);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     inputRef.current?.focus();
-    
-    const dotIndex = inputRef.current?.value.lastIndexOf(".");
+
+    const dotIndex = inputRef.current?.value.lastIndexOf('.');
     if (dotIndex && dotIndex !== -1) {
       inputRef.current?.setSelectionRange(0, dotIndex);
     } else {
@@ -28,7 +28,7 @@ export const NameInputField = ({initValue, onCancel, onRename}: NameInputFieldPr
     if (value == initValue) {
       onCancel();
       return;
-    } 
+    }
 
     try {
       setIsSaving(true);

@@ -1,12 +1,14 @@
 /* ==================== Imports ==================== */
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=cyrillic-ext");
-@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=cyrillic-ext");
-@import url("bootstrap/dist/css/bootstrap.min.css");
-@import url("bootstrap-icons/font/bootstrap-icons.css");
-
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=cyrillic-ext');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=cyrillic-ext');
+@import url('bootstrap/dist/css/bootstrap.min.css');
+@import url('bootstrap-icons/font/bootstrap-icons.css');
 
 /* ==================== Root ==================== */
-html, body, #root, main {
+html,
+body,
+#root,
+main {
   height: 100%;
 }
 
@@ -17,13 +19,24 @@ main {
   color: #1f1f1f;
 }
 
-.home-page {
+.page-container {
   display: grid;
 
   grid-template-columns: auto minmax(720px, 1320px) auto;
   grid-template-rows: auto 1fr;
 
   height: 100%;
+}
+
+.auth-page {
+  display: flex;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgb(215, 215, 215);
+
+  justify-content: center;
 }
 
 .page-header-section {
@@ -57,15 +70,16 @@ main {
 .content-container {
   display: flex;
 
+  justify-content: center;
   padding: 0 2.5em;
 }
 
 .grid-container {
   display: grid;
 
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5em;
- 
+
   width: 100%;
 }
 
@@ -81,6 +95,8 @@ main {
 
   border-radius: 1em;
 
+  aspect-ratio: 1 / 1;
+
   background-color: rgb(235, 235, 235);
 }
 
@@ -90,21 +106,30 @@ main {
 
 .grid-header {
   display: flex;
-  
-  padding: .5em;
+
+  padding: 0.5em;
 
   justify-content: space-between;
   align-items: center;
+
+  min-width: 0px;
 }
 
 .grid-content {
-  padding: 0 .5em .5em .5em;
+  flex: 1;
+  padding: 0 0.5em 0.5em 0.5em;
+
+  display: flex;
+  align-items: center;
+
+  min-width: 0px;
+  overflow: hidden;
 }
 
 /* -TABLE- */
 
 .cell-container {
-  padding: 0px .5em !important;
+  padding: 0px 0.5em !important;
 
   height: 3em;
   line-height: 3em;
@@ -112,11 +137,16 @@ main {
 
 .cell-content {
   display: flex;
-  
-  align-items: center;
-  gap: .5em;
 
+  align-items: center;
+  gap: 0.5em;
+
+  text-wrap: nowrap;
   height: 100%;
+}
+
+.cell-content .file-title-container {
+  max-width: 400px;
 }
 
 .cell-content--end {
@@ -135,7 +165,6 @@ main {
   width: 215px;
 }
 
-
 th {
   font-weight: 500;
 }
@@ -147,11 +176,15 @@ th {
   justify-content: center;
   align-items: center;
 
+  width: 100%;
+  height: 100%;
+
+  background-color: rgb(220, 220, 220);
   overflow: hidden;
 }
 
 .file-preview--list {
-  border-radius: .5em;
+  border-radius: 0.2em;
 }
 
 .file-preview--grid {
@@ -168,17 +201,11 @@ th {
 
   width: 66%;
   height: 66%;
-
-  object-fit: contain;
 }
 
 .file-preview img {
   user-select: none;
-
   width: 100%;
-  height: 100%;
-
-  object-fit: contain;
 }
 
 /* -BUTTONS- */
@@ -192,7 +219,7 @@ th {
   padding: 0;
 
   border: none;
-  border-radius: .75rem;
+  border-radius: 0.75rem;
 
   background-color: rgba(0, 0, 0, 0);
   color: rgb(92, 92, 92);
@@ -205,18 +232,11 @@ th {
 
   font-weight: 600;
 
-  transition: background-color .2s;
-}
-
-.btn-header {
-  width: 40px;
-  height: 40px;
+  transition: background-color 0.2s;
 }
 
 .btn:hover {
   background-color: rgba(0, 0, 0, 0.096);
-  color: rgb(63, 63, 63);
-  fill: rgb(63, 63, 63);
 }
 
 .btn-light {
@@ -224,13 +244,14 @@ th {
   color: rgb(92, 92, 92);
   fill: rgb(92, 92, 92);
 
-  transition: background-color .2s;
+  transition: background-color 0.2s;
 }
 
 .btn-light:hover {
   background-color: rgb(225, 225, 225);
-  color: rgb(63, 63, 63);
-  fill: rgb(63, 63, 63);
+
+  color: rgb(92, 92, 92);
+  fill: rgb(92, 92, 92);
 }
 
 .btn-dark {
@@ -241,26 +262,34 @@ th {
 
 .btn-dark:hover {
   background-color: rgb(102, 102, 102);
-  color: rgb(235, 235, 235);
-  fill: rgb(255, 255, 255);
 }
 
 .btn-text {
   display: flex;
 
-  gap: .2em;
+  gap: 0.2em;
   width: auto;
 
-  padding: 0 .75em;
+  padding: 0 0.75em;
 }
 
 .btn-circle {
-  border-radius: 50%; 
+  border-radius: 50%;
+}
+
+.btn-small {
+  width: 1.5rem;
+  height: 1.5rem;
+
+  border-radius: 0.5rem;
+
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 1rem;
 }
 
 .radio-group {
   display: flex;
-  gap: .2em;
+  gap: 0.2em;
 }
 
 /* -DROPDOWN- */
@@ -270,20 +299,19 @@ th {
 
 .dropdown-menu {
   display: block;
-  
+
   background-color: rgb(235, 235, 235);
   color: rgb(61, 61, 61);
 
   border: none;
-  box-shadow: 0 0 .5em #00000060;
+  box-shadow: 0 0 0.5em #00000060;
 }
 
 .dropdown-header {
-  border-bottom: 1px solid rgb(155, 155, 155);
   color: rgb(82, 82, 82);
-  margin-bottom: .25em;
+  margin-bottom: 0.25em;
 
-  padding: 0 1em .50em 1em;
+  padding: 0 1em 0.5em 1em;
 }
 
 .dropdown-header .user-info {
@@ -291,17 +319,22 @@ th {
   flex-direction: column;
 }
 
+.dropdown-body {
+  padding-top: 0.25em;
+  border-top: 1px solid rgb(155, 155, 155);
+}
+
 .dropdown-section {
   border-bottom: 1px solid rgb(155, 155, 155);
   color: rgb(82, 82, 82);
-  margin-bottom: .25em;
-  padding-bottom: .25em;
+  margin-bottom: 0.25em;
+  padding-bottom: 0.25em;
 }
 
 .dropdown-footer {
   border-top: 1px solid rgb(155, 155, 155);
-  margin-top: .25em;
-  padding-top: .25em;
+  margin-top: 0.25em;
+  padding-top: 0.25em;
 }
 
 .dropdown-item {
@@ -315,12 +348,12 @@ th {
 .dropdown-item:active,
 .dropdown-item.active {
   background-color: rgb(215, 215, 215);
-  color: rgb(61, 61, 61)
+  color: rgb(61, 61, 61);
 }
 
 .dropdown-item:hover {
-  background-color: rgb(215, 215, 215);;
-  color: rgb(61, 61, 61)
+  background-color: rgb(215, 215, 215);
+  color: rgb(61, 61, 61);
 }
 
 .dropdown-menu {
@@ -351,6 +384,7 @@ th {
 
 .modal-content {
   border-radius: 1em;
+  height: 650px;
 }
 
 .title-wrapper {
@@ -358,31 +392,38 @@ th {
   flex-direction: column;
 }
 
-.file-title-wrapper {
+.file-title-container {
   display: flex;
+  flex: 1;
+  align-items: center;
+
+  min-width: 0;
+  margin: 0px 0.5em;
 }
 
 .file-title {
-  display: flex;
-  justify-content: start;
+  display: inline-block;
 
   font-size: 1em;
   font-weight: 600;
 
+  width: 100%;
+
+  text-wrap: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .file-info {
   display: flex;
   flex-direction: column;
 
-  padding: 0 .5em;
+  padding: 0 0.5em;
 }
 
 .modal-preview {
   width: 100%;
-  height: 500px;
 
   display: flex;
   align-items: center;
@@ -398,16 +439,14 @@ th {
 .modal-preview svg {
   fill: rgb(107, 107, 107);
   display: block;
-  max-width: 75%;
-  max-height: 75%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
 .modal-body {
   padding: 0px;
 }
-
-
 
 .form-control:focus {
   box-shadow: none;
@@ -416,6 +455,7 @@ th {
 .description-container {
   display: flex;
   justify-content: center;
+  flex-direction: column;
 
   width: 100%;
 }
@@ -434,7 +474,7 @@ th {
   font-size: 1em;
   font-weight: 600;
 
-  border-radius: .5em;
+  border-radius: 0.5em;
 
   white-space: normal;
   overflow-wrap: anywhere;
@@ -451,23 +491,15 @@ th {
   resize: none;
 }
 
-.description-field .btn {
-  position: absolute;
-}
-
 .field-actions {
   display: flex;
   justify-content: end;
 
-  gap: .25em;
-}
-
-.field-actions .btn {
-  text-decoration: underline;
+  gap: 0.25em;
 }
 
 .form-control {
-  padding: .25em .5em;
+  padding: 0.25em 0.5em;
   margin: 0px;
 }
 
@@ -481,4 +513,205 @@ th {
 .actions-group {
   display: flex;
   align-items: center;
+}
+
+/* -AUTH- */
+
+.auth-header {
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 1rem;
+  color: rgb(92, 92, 92);
+}
+
+.auth-header h3 {
+  font-weight: 600;
+
+  margin-bottom: 0px;
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  width: 367px;
+
+  background-color: rgb(255, 255, 255);
+
+  border-radius: 1em;
+
+  box-shadow: rgba(50, 50, 50, 0.175) 0px 0px 0.5em;
+
+  padding: 2em;
+  margin: auto 0px;
+}
+
+.auth-card .form-control {
+  line-height: 2rem;
+
+  padding: 0.5rem 1rem;
+
+  border-radius: 1rem;
+
+  margin: 0px;
+
+  font-weight: 600;
+  font-size: 1.25em;
+
+  color: rgb(92, 92, 92);
+}
+
+.auth-card .form-control:focus {
+  border: 1px solid rgb(155, 155, 155);
+}
+
+.auth-card .form-control::placeholder {
+  color: rgb(155, 155, 155);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  margin-top: 1.5em;
+}
+
+.auth-footer .btn {
+  width: 100%;
+
+  border-radius: 1rem;
+
+  font-size: 1rem;
+
+  padding: 1.5rem;
+}
+
+.page-header-container .btn {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 1rem;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+}
+
+.description-field .btn {
+  font-size: 0.75em;
+}
+
+.description-field .btn-circle {
+  position: absolute;
+
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.form-error {
+  border-color: rgb(255, 32, 32);
+}
+
+.form-error:focus {
+  border-color: rgb(255, 32, 32) !important;
+}
+
+.form-error-message {
+  color: rgb(255, 32, 32);
+
+  margin: 0.5rem 0px;
+}
+
+.fields-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.share-modal-content {
+  height: auto;
+}
+
+.share-page {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+}
+
+.share-content-container {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(220, 220, 220);
+
+  position: relative;
+
+  padding: 1rem;
+  flex: 1;
+}
+
+.share-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 1rem;
+}
+
+.share-preview {
+  height: 600px;
+  width: 75%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.share-preview img,
+.share-preview svg {
+  fill: rgb(107, 107, 107);
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.share-content-container .description-container {
+  position: absolute;
+
+  width: 30%;
+  height: auto;
+
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.share-header-container .btn {
+  height: 48px;
+
+  min-width: 48px;
+
+  border-radius: 1rem;
+}
+
+.user-actions {
+  display: flex;
+
+  align-items: center;
+  width: auto;
+  gap: 0.5rem;
 }

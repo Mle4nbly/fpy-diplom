@@ -1,79 +1,133 @@
-import { useContext, useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext/AuthContext";
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext/AuthContext';
+import { ApiError } from '../../utils/ApiError';
+
+export type FormValuesType = {
+  username: string;
+  password: string;
+  email?: string;
+  name?: string;
+};
+
+export type FormErrorsType = Partial<Record<keyof FormValuesType, string>>;
 
 export const LoginPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [validated, setValidated] = useState(false);
+  const { login } = useContext(AuthContext);
 
-  const [usernameValue, setUsernameValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
+  const [values, setValues] = useState<FormValuesType>({
+    username: '',
+    password: '',
+  });
+  const [fieldsErrors, setFieldsErrors] = useState<FormErrorsType>({});
+  const [formError, setFormError] = useState<null | string>(null);
 
-  const {login, token, username} = useContext(AuthContext)
+  const validate = () => {
+    const errors: FormErrorsType = {};
 
-  useEffect(() => {
-    if (token && username) navigate('/home');
-  }, [token, username])
+    if (!values.username.trim()) {
+      errors.username = 'Логин обязателен';
+    } else if (!/^[\w.@+-]+/.test(values.username)) {
+      errors.username = 'Допустимы буквы, цифры и символы . @ + - _';
+    }
+
+    if (!values.password.trim()) {
+      errors.password = 'Пароль обязателен';
+    } else if (values.password.length < 6) {
+      errors.password = 'Минимум 6 символов';
+    }
+
+    return errors;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const form = e.currentTarget;
+    setFormError(null);
 
-    if (form && !form.checkValidity()) {
-      e.stopPropagation()
-      setValidated(true)
-
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldsErrors(validationErrors);
       return;
     }
 
-    login(usernameValue, passwordValue);
-  }
+    try {
+      await login(values.username, values.password);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setFormError('Неверный логин или пароль');
+      }
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormError(null);
+
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setFieldsErrors((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
+  };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 w-100">
-      <div className="card shadow-sm p-4" style={{ width: "100%", maxWidth: "350px" }}>
-        <h4 className="mb-4 text-center">Вход</h4>
-        <form 
-          onSubmit={handleSubmit} 
-          className={`needs-validation ${validated ? 'was-validated' : ''}`}
-          noValidate
-        >
-          <div className="mb-3">
-            <input 
-              type="text"
-              name="username"
-              value={usernameValue}
-              className="form-control"
-              placeholder="Введите логин"
-              onChange={(e) => setUsernameValue(e.target.value)}
-              required
-            />
-            <div className="invalid-feedback">Заполните поле логина</div>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-header">
+          <h3 className="title">Авторизация</h3>
+        </div>
+        <form autoComplete="off" className="auth-form" onSubmit={handleSubmit}>
+          {formError && <span className="form-error-message">{formError}</span>}
+          <div className="fields-container">
+            <div className="form-group">
+              <input
+                className={`form-control ${fieldsErrors.username || formError ? 'form-error' : ''}`}
+                type="text"
+                name="username"
+                placeholder="Логин"
+                value={values.username}
+                onChange={(e) => handleChange(e)}
+              />
+              {fieldsErrors.username && (
+                <span className="form-error-message">{fieldsErrors.username}</span>
+              )}
+            </div>
+            <div className="form-group">
+              <input
+                className={`form-control ${fieldsErrors.password || formError ? 'form-error' : ''}`}
+                type="password"
+                name="password"
+                placeholder="Пароль"
+                value={values.password}
+                onChange={(e) => handleChange(e)}
+              />
+              {fieldsErrors.password && (
+                <span className="form-error-message">{fieldsErrors.password}</span>
+              )}
+            </div>
           </div>
-          <div className="mb-3">
-            <input 
-              type="password"
-              name="password"
-              value={passwordValue}
-              className="form-control"
-              placeholder="Введите пароль"
-              onChange={(e) => setPasswordValue(e.target.value)}
-              required
-            />
-            <div className="invalid-feedback">Заполните поле пароля</div>
-          </div>
-          <div className="d-flex justify-content-between">
-            <button type="submit" className="btn btn-primary">
+          <div className="auth-footer">
+            <button type="submit" className="btn btn-text btn-light">
               Войти
             </button>
-            <Link to="/auth/reg" className="btn btn-outline-primary">
-              Создать аккаунт
-            </Link>
+            <button
+              type="button"
+              onClick={() => navigate('/auth/reg')}
+              className="btn btn-text btn-dark"
+            >
+              Нет аккаунта?
+            </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};

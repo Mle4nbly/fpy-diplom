@@ -1,92 +1,135 @@
-import { useRef, useState } from "react";
+import { useRef } from 'react';
+import { ApiError } from '../utils/ApiError';
+import { getRequestOptions } from '../utils/getRequestOptions';
 
-export const useApi = <T extends { id: number }>(token?: string) => {
-  const [data, setData] = useState<T[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+export const useApi = (token: string | null) => {
   const abortRef = useRef<AbortController | null>(null);
-
-  const getHeaders = (isFormData: boolean) => {
-    const headers = new Headers()
-
-    if (!isFormData) {
-      headers.set('Content-Type', 'application/json')
-    }
-    
-    if (token) {
-      headers.set('Authorization', `Token ${token}`)
-    }
-
-    return headers;
-  }
+  const baseUrl = 'http://127.0.0.1:8000/api';
 
   const getData = async (endpoint: string) => {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
-    setError(null);
-    setLoading(true);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api${endpoint}/`, {
-        signal: controller.signal,
-        headers: getHeaders(false),
-      });
+      const response = await fetch(
+        `${baseUrl}${endpoint}/`,
+        getRequestOptions({
+          signal: controller.signal,
+          token,
+        }),
+      );
 
-      if (!response.ok) throw new Error("Ошибка GET-запроса");
+      let data = null;
 
-      const jsonData = await response.json();
-      setData(jsonData);
-      return jsonData;
-    } catch (error) {
-      if (error instanceof Error && error.name !== "AbortError") {
-        setError(error.message);
+      try {
+        data = await response.json();
+      } catch (error: unknown) {
         console.log(error);
       }
-    } finally {
-      setLoading(false);
+
+      if (!response.ok) {
+        throw new ApiError(response.status, data?.error);
+      }
+
+      return data;
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name == 'AbortError') {
+        return null;
+      }
+
+      throw error;
     }
   };
 
   const sendData = async (
-    method: "POST" | "PUT" | "DELETE" | "PATCH",
+    method: 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     endpoint: string,
-    body?: any
+    body?: BodyInit,
   ) => {
-    setError(null);
-    setLoading(true);
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     try {
-      let fetchOptions: RequestInit = {
-        method,
-        headers: getHeaders(false),
-      };
+      const response = await fetch(
+        `${baseUrl}${endpoint}/`,
+        getRequestOptions({
+          method,
+          body,
+          signal: controller.signal,
+          token,
+        }),
+      );
 
-      if (body instanceof FormData) {
-        fetchOptions.body = body;
-        fetchOptions.headers = getHeaders(true);
-      } else if (body) {
-        fetchOptions.body = JSON.stringify(body);
+      let data = null;
+
+      try {
+        data = await response.json();
+      } catch (error: unknown) {
+        console.log(error);
       }
 
-      const response = await fetch(`http://localhost:8000/api${endpoint}/`, fetchOptions);
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error);
+        throw new ApiError(response.status, data?.error);
       }
 
-      const textResponse = await response.text();
-      return textResponse ? JSON.parse(textResponse) : "No body";
+      return response.status == 204 ? true : data;
     } catch (error: unknown) {
-      if (error instanceof Error && error.name !== "AbortError") {
-        setError(error.message);
-        console.log(error.message);
-      } else {
-        setError("Неопознанная ошибка");
+      if (error instanceof Error && error.name == 'AbortError') {
+        return null;
       }
-    } finally {
-      setLoading(false);
+
+      throw error;
     }
   };
 
-  return { data, error, loading, setData, getData, sendData };
+  const downloadData = async (endpoint: string, filename: string) => {
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      const response = await fetch(
+        `${baseUrl}${endpoint}`,
+        getRequestOptions({
+          signal: controller.signal,
+          token,
+        }),
+      );
+
+      let data = null;
+
+      if (!response.ok) {
+        try {
+          data = await response.json();
+        } catch (error: unknown) {
+          console.log(error);
+        }
+
+        throw new ApiError(response.status, data.error);
+      }
+
+      data = await response.blob();
+
+      const url = window.URL.createObjectURL(data);
+
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name == 'AbortError') {
+        return null;
+      }
+
+      throw error;
+    }
+  };
+
+  return { getData, sendData, downloadData };
 };

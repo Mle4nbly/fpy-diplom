@@ -1,13 +1,13 @@
-import { useContext, useEffect } from "react"
-import { UsersList } from "./UsersList"
-import { UsersContext } from "../../contexts/UsersContext/UsersContext"
+import { useContext, useEffect } from 'react';
+import { UsersList } from './UsersList';
+import { UsersContext } from '../../contexts/UsersContext/UsersContext';
 
 export const AdminPanel = () => {
-  const {users, deleteUser, changeUserRights, getUsersList} = useContext(UsersContext)
+  const { users, deleteUser, changeUserRights, getUsersList } = useContext(UsersContext);
 
   useEffect(() => {
     getUsersList();
-  }, [])
+  }, [getUsersList]);
 
   if (!users?.length) return <p>No users...</p>;
 
@@ -17,8 +17,8 @@ export const AdminPanel = () => {
         <h3 className="title">Панель администратора</h3>
       </div>
       <div className="content-container">
-        <UsersList users={users} onChangeRights={changeUserRights} onDelete={deleteUser}/>
+        <UsersList users={users} onChangeRights={changeUserRights} onDelete={deleteUser} />
       </div>
     </section>
-  )
-}
+  );
+};

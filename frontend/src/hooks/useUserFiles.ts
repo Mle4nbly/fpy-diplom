@@ -1,101 +1,118 @@
-import { useEffect, useState } from "react"
-import type { FileStatus, FileType } from "../types/apiTypes"
-import { useApi } from "./useApi"
+import { useCallback, useEffect, useState } from 'react';
+import type { FileStatus, FileType } from '../types/apiTypes';
+import { useApi } from './useApi';
 
-export const useUserFiles = (token?: string, username?: string) => {
-  const {getData, sendData, error, loading} = useApi(token)
+export const useUserFiles = (token: string | null, username?: string) => {
+  const { getData, sendData, downloadData } = useApi(token);
 
-  const [baseUrl, setBaseUrl] = useState(username ? `/files/${username}` : '/files')
-  const [files, setFiles] = useState<FileType[]>([])
+  const [baseUrl, setBaseUrl] = useState(username ? `/files/${username}` : '/files');
+
+  const [files, setFiles] = useState<FileType[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (username) {
-      setBaseUrl(`/files/${username}`)
+      setBaseUrl(`/files/${username}`);
     } else {
-      setBaseUrl('/files')
+      setBaseUrl('/files');
     }
-  }, [username])
+  }, [username]);
+
+  const getFilesList = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getData(baseUrl);
+
+      setFiles(data);
+    } catch (error: unknown) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, getData, baseUrl]);
 
   useEffect(() => {
-    getFilesList()
-  }, [])
-
-  const getFilesList = async () => {
-    const response = await getData(baseUrl);
-
-    if (response) setFiles(response)
-  }
+    getFilesList();
+  }, [getFilesList]);
 
   const deleteFile = async (id: number) => {
-    toggleFileStatus(id, 'DELETING')
-    const response = await sendData('DELETE', `${baseUrl}/${id}`);
+    try {
+      toggleFileStatus(id, 'DELETING');
+      const data = await sendData('DELETE', `${baseUrl}/${id}`);
 
-    if (response) setFiles((prev) => prev.filter((f) => f.id !== id))
-    toggleFileStatus(id)
-  }
+      if (data) {
+        setFiles((prev) => prev.filter((f) => f.id !== id));
+      }
+    } catch (error: unknown) {
+      console.log(error);
+    } finally {
+      toggleFileStatus(id);
+    }
+  };
 
   const editFile = async (id: number, name: string, description: string) => {
-    toggleFileStatus(id, 'EDITING')
-    const response = await sendData('PATCH', `${baseUrl}/${id}`, {name, description})
+    try {
+      toggleFileStatus(id, 'EDITING');
+      const data = await sendData(
+        'PATCH',
+        `${baseUrl}/${id}`,
+        JSON.stringify({ original_name: name, description }),
+      );
 
-    if (response) {
-      setFiles((prev) => 
-        prev.map((f) => (f.id == id ? {...f, original_name: name, description} : f))
-      )
+      if (data) {
+        setFiles((prev) =>
+          prev.map((f) => (f.id == id ? { ...f, original_name: name, description } : f)),
+        );
+      }
+    } catch (error: unknown) {
+      console.log(error);
+    } finally {
+      toggleFileStatus(id);
     }
-    toggleFileStatus(id)
-  }
+  };
 
   const uploadFile = async (file: File, fileName: string, description: string) => {
     const formData = new FormData();
-    const originalName = `${fileName}.${file.name.split('.')[1]}`
+    const originalName = `${fileName}`;
 
-    formData.append("file", file);
-    formData.append("name", originalName);
-    formData.append("description", description);
+    formData.append('file', file);
+    formData.append('original_name', originalName);
+    formData.append('description', description);
 
-    const response = await sendData("POST", `${baseUrl}`, formData);
-    if (response) setFiles((prev) => [...prev, response]);
-  };
-
-  const downloadFile = async (id: number, filename: string) => {
-    toggleFileStatus(id, "DOWNLOADING")
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api${baseUrl}/${id}/download/`, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
-        },
-      });
+      const data = await sendData('POST', `${baseUrl}`, formData);
 
-      if (!response.ok) throw new Error("Ошибка загрузки файла");
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      toggleFileStatus(id)
+      if (data) setFiles((prev) => [...prev, data]);
+    } catch (error: unknown) {
+      console.log(error);
     }
   };
 
-  const toggleFileStatus = (id: number, status?: FileStatus) => {
-    setFiles((prev) => prev?.map((f) => {
-      if (id !== f.id) return f;
-      if (status) return {...f, status};
-      const {status: _, ...rest} = f;
-
-      return rest;
-    }) ?? []);
+  const downloadFile = (id: number, filename: string) => {
+    try {
+      toggleFileStatus(id, 'DOWNLOADING');
+      downloadData(`${baseUrl}/${id}/download`, filename);
+    } catch (error: unknown) {
+      console.log(error);
+    } finally {
+      toggleFileStatus(id);
+    }
   };
 
-  return {files, loading, error, getFilesList, uploadFile, deleteFile, editFile, downloadFile};
-}
+  const toggleFileStatus = (id: number, nextStatus?: FileStatus) => {
+    setFiles(
+      (prev) =>
+        prev?.map((f) => {
+          if (id !== f.id) return f;
+          if (nextStatus) return { ...f, nextStatus };
+
+          const clone = { ...f };
+          delete clone.status;
+
+          return clone;
+        }) ?? [],
+    );
+  };
+
+  return { files, loading, getFilesList, uploadFile, deleteFile, editFile, downloadFile };
+};

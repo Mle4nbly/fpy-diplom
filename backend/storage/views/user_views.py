@@ -73,6 +73,9 @@ class ShareFileDetailView(APIView):
   def get(self, request, token):
     file_obj = get_object_or_404(File, share_link=token)
 
-    serializer = FileSerializer(file_obj)
+    serializer = FileSerializer(
+      file_obj,
+      context={'request': request}  
+    )
 
     return Response(serializer.data)

@@ -1,14 +1,14 @@
-import type { FileType } from "../../types/apiTypes";
-import { FileListCard } from "./FileCard/FileListCard";
+import type { FileType } from '../../types/apiTypes';
+import { FileListCard } from './FileCard/FileListCard';
 
 export interface FilesListProps {
-  files: FileType[],
-  onDelete: (id: number) => void,
-  onEdit: (id: number, newName: string, description: string) => void,
-  onDownload: (id: number, filename: string) => void
+  files: FileType[];
+  onDelete: (id: number) => void;
+  onEdit: (id: number, newName: string, description: string) => void;
+  onDownload: (id: number, filename: string) => void;
 }
 
-export const FilesList = ({files, onDelete, onDownload, onEdit}: FilesListProps) => {
+export const FilesList = ({ files, onDelete, onDownload, onEdit }: FilesListProps) => {
   return (
     <table className="table">
       <thead>
@@ -18,7 +18,7 @@ export const FilesList = ({files, onDelete, onDownload, onEdit}: FilesListProps)
               <span>Название</span>
             </div>
           </th>
-          <th className="cell-container col-uploaded"> 
+          <th className="cell-container col-uploaded">
             <div className="cell-content">
               <span>Дата добавления</span>
             </div>
@@ -40,7 +40,7 @@ export const FilesList = ({files, onDelete, onDownload, onEdit}: FilesListProps)
           <FileListCard
             key={file.id}
             id={file.id}
-            file={file.file}
+            url={file.url}
             original_name={file.original_name}
             description={file.description}
             size={file.size}
