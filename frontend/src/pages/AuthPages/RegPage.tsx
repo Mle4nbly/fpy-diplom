@@ -37,7 +37,7 @@ export const RegPage = () => {
     if (!values.name?.trim()) {
       errors.name = 'Имя обязательно';
     } else if (!/^[A-Za-zА-Яа-яЁё]+(?:\s+[A-Za-zА-Яа-яЁё]+)*$/.test(values.name)) {
-      errors.username = 'Допустимы только буквы';
+      errors.name = 'Допустимы только буквы';
     }
 
     const emailInput = emailInputRef.current;
@@ -137,9 +137,9 @@ export const RegPage = () => {
                 readOnly
                 onFocus={(e) => e.target.removeAttribute('readonly')}
               />
-              {fieldsErrors.username && (
+              {fieldsErrors.username &&
                 <span className="form-error-message">{fieldsErrors.username}</span>
-              )}
+              }
             </div>
             <div className="form-group">
               <input

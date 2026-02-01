@@ -22,8 +22,8 @@ export const getRequestOptions = ({
   };
 
   if (body) {
-    requestOptions.body = isFormData ? body : JSON.stringify(body);
+    requestOptions.body = body
   }
-
+  
   return requestOptions;
 };

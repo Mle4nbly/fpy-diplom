@@ -33,7 +33,7 @@ export const useUserFiles = (token: string | null, username?: string) => {
 
   useEffect(() => {
     getFilesList();
-  }, [getFilesList]);
+  }, []);
 
   const deleteFile = async (id: number) => {
     try {

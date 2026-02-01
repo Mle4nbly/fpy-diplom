@@ -33,7 +33,7 @@ export const ShareFilePage = () => {
 
   useEffect(() => {
     getFileData();
-  }, [getFileData]);
+  }, []);
 
   if (!fileData) return;
 

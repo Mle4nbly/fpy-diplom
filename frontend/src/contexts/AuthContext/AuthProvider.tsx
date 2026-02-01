@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUserData(null);
     }
-  }, [token, getMeData]);
+  }, [token]);
 
   const register = async (username: string, email: string, fullName: string, password: string) => {
     const data = await sendData(
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     const data = await sendData('POST', '/users/login', JSON.stringify({ username, password }));
-
+    
     setToken(data.token);
     localStorage.setItem('token', data.token);
   };
