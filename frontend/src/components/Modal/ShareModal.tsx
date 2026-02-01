@@ -8,7 +8,7 @@ export interface DetailModalProps {
 
 export const ShareModal = ({ shareLink, fileName, onClose }: DetailModalProps) => {
   const handleCopyLink = async () => {
-    const link = `http://localhost:5173/s/${shareLink}`;
+    const link = `${import.meta.env.VITE_CLIENT_URL}/s/${shareLink}`;
 
     try {
       await navigator.clipboard.writeText(link);

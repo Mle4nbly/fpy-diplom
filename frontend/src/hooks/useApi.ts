@@ -4,7 +4,7 @@ import { getRequestOptions } from '../utils/getRequestOptions';
 
 export const useApi = (token: string | null) => {
   const abortRef = useRef<AbortController | null>(null);
-  const baseUrl = 'http://89.104.70.16:8000/api';
+  const baseUrl = `${import.meta.env.VITE_API_URL}/api`;
 
   const getData = async (endpoint: string) => {
     if (abortRef.current) abortRef.current.abort();
