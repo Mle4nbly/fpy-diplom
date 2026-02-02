@@ -10,7 +10,6 @@ from django.utils import timezone
 
 class FilesListCreateView(generics.ListCreateAPIView):
   serializer_class = FileSerializer
-  permission_classes = [permissions.IsAuthenticated]
 
   def get_queryset(self):
     return File.objects.filter(user=self.request.user)
@@ -20,7 +19,6 @@ class FilesListCreateView(generics.ListCreateAPIView):
 
 class FileDetailView(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = FileSerializer
-  permission_classes = [permissions.IsAuthenticated]
 
   def get_queryset(self):
     return File.objects.filter(user=self.request.user)
@@ -30,8 +28,6 @@ class FileDetailView(generics.RetrieveUpdateDestroyAPIView):
     super().perform_destroy(instance)
 
 class FileDownloadView(APIView):
-  permission_classes = [permissions.IsAuthenticated]
-
   def get(self, request, pk):
     file_obj = get_object_or_404(File, pk=pk, user=request.user)
     file_path = file_obj.file.path
@@ -52,6 +48,8 @@ class FileDownloadView(APIView):
     )
 
 class ShareFileDownloadView(APIView):
+  permission_classes = [AllowAny]
+
   def get(self, request, token):
     file_obj = get_object_or_404(File, share_link=token)
 
@@ -70,6 +68,8 @@ class ShareFileDownloadView(APIView):
     )
   
 class ShareFileDetailView(APIView):
+  permission_classes = [AllowAny]
+
   def get(self, request, token):
     file_obj = get_object_or_404(File, share_link=token)
 

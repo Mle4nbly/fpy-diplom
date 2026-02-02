@@ -40,6 +40,7 @@ class MeView(generics.RetrieveAPIView):
     return self.request.user
 
 class RegisterView(generics.CreateAPIView):
+  permission_classes = [AllowAny]
   serializer_class = UserSerializer
 
   def perform_create(self, serializer):
@@ -58,6 +59,8 @@ class RegisterView(generics.CreateAPIView):
     return response
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
 
