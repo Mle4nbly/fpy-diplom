@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework import permissions
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Count, Sum
 from .models import User
@@ -40,7 +40,7 @@ class MeView(generics.RetrieveAPIView):
     return self.request.user
 
 class RegisterView(generics.CreateAPIView):
-  permission_classes = [AllowAny]
+  permission_classes = [permissions.AllowAny]
   serializer_class = UserSerializer
 
   def perform_create(self, serializer):
@@ -59,7 +59,7 @@ class RegisterView(generics.CreateAPIView):
     return response
 
 class LoginView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)

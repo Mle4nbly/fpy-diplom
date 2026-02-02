@@ -48,7 +48,7 @@ class FileDownloadView(APIView):
     )
 
 class ShareFileDownloadView(APIView):
-  permission_classes = [AllowAny]
+  permission_classes = [permissions.AllowAny]
 
   def get(self, request, token):
     file_obj = get_object_or_404(File, share_link=token)
@@ -68,7 +68,7 @@ class ShareFileDownloadView(APIView):
     )
   
 class ShareFileDetailView(APIView):
-  permission_classes = [AllowAny]
+  permission_classes = [permissions.AllowAny]
 
   def get(self, request, token):
     file_obj = get_object_or_404(File, share_link=token)
