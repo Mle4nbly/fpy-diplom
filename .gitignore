@@ -1,3 +1,10 @@
+__pycache__/
+*.pyc
+
+backend/venv/
+
+backend/static/
+
 # Logs
 logs
 *.log
@@ -24,6 +31,7 @@ dist-ssr
 *.sln
 *.sw?
 
+.env.prod
 .env
 
 test
