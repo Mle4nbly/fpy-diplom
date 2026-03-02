@@ -1,6 +1,6 @@
 from django.urls import path
-from .views.user_views import FilesListCreateView, FileDetailView, FileDownloadView, ShareFileDownloadView, ShareFileDetailView
-from .views.admin_views import AdminFilesListCreateView, AdminFileDetailView, AdminFileDownloadView
+from .views.user import FilesListCreateView, FileDetailView, FileDownloadView, ShareFileDownloadView, ShareFileDetailView
+from .views.admin import AdminFilesListCreateView, AdminFileDetailView, AdminFileDownloadView
 
 urlpatterns = [
     path('s/<str:token>/', ShareFileDetailView.as_view(), name='share-file-detail'),

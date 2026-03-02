@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AuthContext } from './AuthContext';
-import { useApi } from '../../hooks/useApi';
+import { useApi } from '../../shared/hooks/useApi';
 
 type UserDataType = {
   username: string;

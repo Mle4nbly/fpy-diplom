@@ -1,16 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { HomePage } from './pages/HomePage/HomePage';
-import { LoginPage } from './pages/AuthPages/LoginPage';
-import { RegPage } from './pages/AuthPages/RegPage';
+import { FilesManagerPage } from './pages/FilesManagerPage';
+import { LoginPage } from './pages/LoginPage';
+import { RegPage } from './pages/RegPage';
 
 import './App.css';
 import { MainLayout } from './layouts/MainLayout';
-import { AdminPage } from './pages/AdminPages/AdminPage';
-import { AdminFilesPage } from './pages/AdminPages/AdminFilesPage';
-import { ShareFilePage } from './pages/ShareFilePage/ShareFilePage';
+import { AdminPage } from './pages/AdminDashboardPage';
+import { AdminFilesManagerPage } from './pages/AdminFilesManagerPage';
+import { ShareFilePage } from './pages/ShareFilePage';
 import { AuthProvider } from './contexts/AuthContext/AuthProvider';
 import { PrivateRoute } from './layouts/PrivateRoute';
 import { PublicRoute } from './layouts/PublicRoute';
+import { ErrorPage } from './pages/ErrorPage';
 
 function App() {
   return (
@@ -22,16 +23,17 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/home" element={<HomePage />} />
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<FilesManagerPage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/admin/:username" element={<AdminFilesPage />} />
+            <Route path="/admin/:username" element={<AdminFilesManagerPage />} />
           </Route>
         </Route>
 
         <Route element={<ShareFilePage />} path="/s/:token" />
 
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route path="*" element={<ErrorPage />}/>
       </Routes>
     </AuthProvider>
   );
