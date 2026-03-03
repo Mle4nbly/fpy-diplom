@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { ApiError } from '../../utils/ApiError';
 import { getRequestOptions } from '../../utils/getRequestOptions';
 
@@ -6,7 +6,7 @@ export const useApi = (token: string | null) => {
   const abortRef = useRef<AbortController | null>(null);
   const baseUrl = `${import.meta.env.VITE_API_URL}/api`;
 
-  const getData = async (endpoint: string) => {
+  const getData = useCallback(async (endpoint: string) => {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -40,9 +40,9 @@ export const useApi = (token: string | null) => {
 
       throw error;
     }
-  };
+  }, [baseUrl, token])
 
-  const sendData = async (
+  const sendData = useCallback(async (
     method: 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     endpoint: string,
     body?: BodyInit,
@@ -82,9 +82,9 @@ export const useApi = (token: string | null) => {
 
       throw error;
     }
-  };
+  }, [baseUrl, token])
 
-  const downloadData = async (endpoint: string, filename: string) => {
+  const downloadData = useCallback(async (endpoint: string, filename: string) => {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -129,7 +129,7 @@ export const useApi = (token: string | null) => {
 
       throw error;
     }
-  };
+  }, [baseUrl, token])
 
   return { getData, sendData, downloadData };
 };

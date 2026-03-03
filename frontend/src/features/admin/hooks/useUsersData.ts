@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useApi } from "../../../shared/hooks/useApi";
 import type { UserType } from "../../../types/apiTypes";
 
@@ -8,11 +8,7 @@ export const useUsersData = (token: string | null) => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    getUsersList();
-  }, [])
-
-  const getUsersList = async () => {
+  const getUsersList = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getData('/users')
@@ -23,7 +19,11 @@ export const useUsersData = (token: string | null) => {
     } finally {
       setLoading(false);
     };
-  }
+  }, [getData])
+
+  useEffect(() => {
+    getUsersList();
+  }, [getUsersList])
   
   const deleteUser = async (id: number) => {
     try {

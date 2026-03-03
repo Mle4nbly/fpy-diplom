@@ -4,8 +4,8 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import type { FileType } from '../types/apiTypes';
 import { FilePreview } from '../features/files/cards/FilePreview';
 import { AuthContext } from '../contexts/AuthContext/AuthContext';
-import { UserMenu } from '../features/auth/UserMenu';
-import { AuthControls } from '../features/auth/AuthControls';
+import { UserMenu } from '../features/auth/ui/UserMenu';
+import { AuthControls } from '../features/auth/ui/AuthControls';
 
 export const ShareFilePage = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export const ShareFilePage = () => {
 
   useEffect(() => {
     getFileData();
-  }, []);
+  }, [getFileData]);
 
   if (!fileData) return;
 

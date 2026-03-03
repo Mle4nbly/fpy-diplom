@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { AuthContext } from '../../contexts/AuthContext/AuthContext';
-import { Dropdown } from '../../shared/ui/dropdown/Dropdown';
+import { AuthContext } from '../../../contexts/AuthContext/AuthContext';
+import { Dropdown } from '../../../shared/ui/dropdown/Dropdown';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const UserMenu = () => {

@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUserData(null);
     }
-  }, [token]);
+  }, [token, getMeData]);
 
   const register = async (username: string, email: string, fullName: string, password: string) => {
     const data = await sendData(

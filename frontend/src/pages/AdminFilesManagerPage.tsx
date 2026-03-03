@@ -5,7 +5,7 @@ import { ViewTypeContext } from '../contexts/ViewTypeContext/ViewTypeContext';
 import { SortingToggler } from '../features/files/controls/SortingToggler';
 import { FileBrowser } from '../features/files/views/FilesBrowser';
 import { FileUploadButton } from '../features/files/controls/FileUploadButton';
-import { useFilesData } from '../shared/hooks/useFilesData';
+import { useFilesData } from '../features/files/hooks/useFilesData';
 
 export const AdminFilesManagerPage = () => {
   const params = useParams();
@@ -18,7 +18,7 @@ export const AdminFilesManagerPage = () => {
   return (
     <section className="page-content-section">
           <div className="title-container">
-            <h3 className="title">Все файлы</h3>
+            <h3 className="title">Все файлы пользователя {username}</h3>
           </div>
           <header className="header-container">
             <FileUploadButton onUpload={uploadFile} />

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { FileStatus, FileType } from '../../types/apiTypes';
-import { useApi } from './useApi';
+import type { FileStatus, FileType } from '../../../types/apiTypes';
+import { useApi } from '../../../shared/hooks/useApi';
 
 export const useFilesData = (token: string | null, username?: string) => {
   const { getData, sendData, downloadData } = useApi(token);
@@ -33,7 +33,7 @@ export const useFilesData = (token: string | null, username?: string) => {
 
   useEffect(() => {
     getFilesList();
-  }, []);
+  }, [getFilesList]);
 
   const deleteFile = async (id: number) => {
     try {

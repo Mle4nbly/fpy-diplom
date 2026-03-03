@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext/AuthContext';
 import { ViewTypeContext } from '../contexts/ViewTypeContext/ViewTypeContext';
-import { useFilesData } from '../shared/hooks/useFilesData';
+import { useFilesData } from '../features/files/hooks/useFilesData';
 import { FileUploadButton } from '../features/files/controls/FileUploadButton';
 import { SortingToggler } from '../features/files/controls/SortingToggler';
 import { FileBrowser } from '../features/files/views/FilesBrowser';

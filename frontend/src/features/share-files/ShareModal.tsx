@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface DetailModalProps {
@@ -7,17 +8,13 @@ export interface DetailModalProps {
 }
 
 export const ShareModal = ({ shareLink, fileName, onClose }: DetailModalProps) => {
-  const handleCopyLink = async () => {
-    const link = `${import.meta.env.VITE_CLIENT_URL}/s/${shareLink}`;
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const link = `${import.meta.env.VITE_CLIENT_URL}/s/${shareLink}`
 
-    try {
-      await navigator.clipboard.writeText(link);
-
-      console.log('Ссылка скопирована');
-    } catch {
-      console.log('Ошибка');
-    }
-  };
+  useEffect(() => {
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  }, [])
 
   return createPortal(
     <>
@@ -33,9 +30,12 @@ export const ShareModal = ({ shareLink, fileName, onClose }: DetailModalProps) =
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-light btn-text" onClick={handleCopyLink}>
-                <span>Копировать ссылку</span>
-              </button>
+              <input 
+                ref={inputRef}
+                className='form-control' 
+                type="text" 
+                value={link}
+              />
               <button className="btn btn-dark btn-text">
                 <span onClick={onClose}>Готово</span>
               </button>

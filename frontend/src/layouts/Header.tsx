@@ -1,4 +1,4 @@
-import { UserMenu } from "../features/auth/UserMenu";
+import { UserMenu } from "../features/auth/ui/UserMenu";
 import { HomeButton } from '../shared/ui/buttons/HomeButton';
 
 export const Header = () => {
