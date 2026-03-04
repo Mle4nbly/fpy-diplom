@@ -27,14 +27,14 @@ export const RegPage = () => {
 
     if (!values.username.trim()) {
       errors.username = 'Логин обязателен';
-    } else if (!/^[\w.@+-]+/.test(values.username)) {
-      errors.username = 'Допустимы буквы, цифры и символы . @ + - _';
+    } else if (!/^[A-Za-z][A-Za-z0-9]{3,19}$/.test(values.username)) {
+      errors.username = 'Логин: 4–20 символов, только латинские буквы и цифры, начинается с буквы';
     }
 
     if (!values.password.trim()) {
       errors.password = 'Пароль обязателен';
-    } else if (values.password.length < 6) {
-      errors.password = 'Минимум 6 символов';
+    } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{6,}$/.test(values.password)) {
+      errors.password = 'Пароль: минимум 6 символов, 1 заглавная буква, 1 цифра и 1 спецсимвол';
     }
 
     if (!values.name?.trim()) {
@@ -102,7 +102,7 @@ export const RegPage = () => {
         <form noValidate autoComplete="off" className="auth-form" onSubmit={handleSubmit}>
           {formError && 
             <div className='form-error-message'>
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+              <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px">
                 <path d="M508.5-291.5Q520-303 520-320t-11.5-28.5Q497-360 480-360t-28.5 11.5Q440-337 440-320t11.5 28.5Q463-280 480-280t28.5-11.5ZM440-440h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
               </svg>
               <span>{formError}</span>
@@ -124,7 +124,7 @@ export const RegPage = () => {
               />
               {fieldsErrors.email && (
                 <div className='form-error-message'>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px">
                     <path d="M508.5-291.5Q520-303 520-320t-11.5-28.5Q497-360 480-360t-28.5 11.5Q440-337 440-320t11.5 28.5Q463-280 480-280t28.5-11.5ZM440-440h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
                   </svg>
                   <span>{fieldsErrors.email}</span>
@@ -144,7 +144,7 @@ export const RegPage = () => {
               />
               {fieldsErrors.name && 
                 <div className='form-error-message'>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px">
                     <path d="M508.5-291.5Q520-303 520-320t-11.5-28.5Q497-360 480-360t-28.5 11.5Q440-337 440-320t11.5 28.5Q463-280 480-280t28.5-11.5ZM440-440h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
                   </svg>
                   <span>{fieldsErrors.name}</span>
@@ -164,7 +164,7 @@ export const RegPage = () => {
               />
               {fieldsErrors.username &&
                 <div className='form-error-message'>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px">
                     <path d="M508.5-291.5Q520-303 520-320t-11.5-28.5Q497-360 480-360t-28.5 11.5Q440-337 440-320t11.5 28.5Q463-280 480-280t28.5-11.5ZM440-440h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
                   </svg>
                   <span>{fieldsErrors.username}</span>
@@ -184,7 +184,7 @@ export const RegPage = () => {
               />
               {fieldsErrors.password && (
                 <div className='form-error-message'>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px">
                     <path d="M508.5-291.5Q520-303 520-320t-11.5-28.5Q497-360 480-360t-28.5 11.5Q440-337 440-320t11.5 28.5Q463-280 480-280t28.5-11.5ZM440-440h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
                   </svg>
                   <span>{fieldsErrors.password}</span>

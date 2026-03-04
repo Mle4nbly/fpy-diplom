@@ -15,6 +15,8 @@ export interface FileType {
 export interface UserType {
   id: number;
   username: string;
+  full_name: string;
+  email: string;
   is_admin: boolean;
   files_count: number;
   total_size: number;

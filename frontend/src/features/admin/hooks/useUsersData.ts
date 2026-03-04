@@ -28,7 +28,7 @@ export const useUsersData = (token: string | null) => {
   const deleteUser = async (id: number) => {
     try {
       setLoading(true);
-      const data = await sendData('POST', `/users/${id}`);
+      const data = await sendData('DELETE', `/users/${id}`);
 
       if (data) setUsers((prev) => prev.filter((u) => u.id !== id))
     } catch (error) {

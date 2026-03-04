@@ -434,10 +434,6 @@ th {
   justify-content: space-between;
 }
 
-.modal-footer .form-control {
-  flex: 1
-}
-
 .modal-header {
   justify-content: space-between;
 }
@@ -484,6 +480,8 @@ th {
 
 .modal-preview {
   width: 100%;
+
+  flex: 1;
 
   display: flex;
   align-items: center;
@@ -704,6 +702,10 @@ th {
   margin: 0.5rem 0px;
 }
 
+.form-error-message svg {
+  min-width: 16px;
+}
+
 .fields-container {
   display: flex;
   flex-direction: column;
@@ -816,6 +818,10 @@ th {
   border-top: 4px solid rgb(255, 255, 255);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.form-control {
+  flex: 1
 }
 
 @keyframes spin {

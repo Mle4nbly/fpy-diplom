@@ -33,7 +33,6 @@ export const DetailModal = ({
   const handleOpenDescriptionField = () => {
     setIsEditDescription(true);
     setDropdownIsOpen(false);
-    console.log(url);
   };
 
   const handleDescriptionFieldCancel = () => {

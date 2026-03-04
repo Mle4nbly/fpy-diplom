@@ -3,7 +3,7 @@ from rest_framework import permissions
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Count, Sum
 from ..models import User
-from ..serializers import UserListSerializer, UserDetailSerializer
+from ..serializers import UserListSerializer, UserAdminSerializer
 
 class IsAdmin(permissions.BasePermission):
   def has_permission(self, request, view):
@@ -24,7 +24,7 @@ class UserListView(generics.ListAPIView):
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
   permission_classes = [IsAdmin]
-  serializer_class = UserDetailSerializer
+  serializer_class = UserAdminSerializer
 
   def get_queryset(self):
     return User.objects.exclude(pk=self.request.user.pk)

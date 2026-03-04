@@ -4,10 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions
 from django.contrib.auth import authenticate, login, logout
-from ..serializers import UserSerializer, LoginSerializer, UserDetailSerializer
+from ..serializers import UserSerializer, LoginSerializer, UserMeSerializer
 
-class MeView(generics.RetrieveAPIView):
-  serializer_class = UserDetailSerializer
+class MeView(generics.RetrieveUpdateAPIView):
+  serializer_class = UserMeSerializer
   permission_classes = [permissions.IsAuthenticated]
 
   def get_object(self):

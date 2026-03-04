@@ -31,6 +31,8 @@ export const UsersList = ({ users, onChangeRights, onDelete }: UsersListProps) =
           <UserCard
             key={user.id}
             id={user.id}
+            email={user.email}
+            full_name={user.full_name}
             username={user.username}
             total_size={user.total_size}
             is_admin={user.is_admin}

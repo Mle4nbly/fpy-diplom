@@ -21,8 +21,6 @@ export const ShareFilePage = () => {
     try {
       const data = await getData(`/s/${fileToken}`);
 
-      console.log(data);
-
       if (data) {
         setFileData(data);
       }
@@ -46,9 +44,7 @@ export const ShareFilePage = () => {
               <button
                 type="button"
                 className="btn btn-circle"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home')}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

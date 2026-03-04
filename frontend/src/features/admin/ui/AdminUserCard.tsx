@@ -11,6 +11,8 @@ export interface UserCardProps extends UserType {
 export const UserCard = ({
   id,
   username,
+  email,
+  full_name,
   files_count,
   total_size,
   is_admin,
@@ -78,7 +80,14 @@ export const UserCard = ({
       </tr>
       {dropdownIsOpen && btnRef ? (
         <Dropdown buttonRef={btnRef} onClose={() => setDropdownIsOpen(false)}>
-          <li>
+          <li className="dropdown-header">
+            <div className="user-info">
+              <span style={{fontWeight: 600, fontSize: '16px'}}>{username}</span>
+              <span>{full_name}</span>
+              <span style={{ fontSize: '10px' }}>{email}</span>
+            </div>
+          </li>
+          <li className="dropdown-body">
             <button className="dropdown-item" onClick={handleChangeRights}>
               {is_admin ? 'Ограничить доступ' : 'Предоставить доступ'}
             </button>

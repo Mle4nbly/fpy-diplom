@@ -7,7 +7,7 @@ export const UserMenu = () => {
   const navigate = useNavigate();
   const url = useLocation().pathname;
 
-  const { username, email, adminRights, logout } = useContext(AuthContext);
+  const { username, email, full_name, adminRights, logout } = useContext(AuthContext);
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 
   const btnRef = useRef<HTMLButtonElement | null>(null);
@@ -35,7 +35,8 @@ export const UserMenu = () => {
         <Dropdown buttonRef={btnRef} onClose={() => setDropdownIsOpen(false)}>
           <li className="dropdown-header">
             <div className="user-info">
-              <span>{username}</span>
+              <span style={{fontWeight: 600, fontSize: '16px'}}>{username}</span>
+              <span>{full_name}</span>
               <span style={{ fontSize: '10px' }}>{email}</span>
             </div>
           </li>

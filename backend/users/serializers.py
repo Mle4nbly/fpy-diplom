@@ -17,11 +17,17 @@ class UserSerializer(serializers.ModelSerializer):
     
     return user
 
-class UserDetailSerializer(serializers.ModelSerializer):
+class UserAdminSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'username', 'email', 'is_admin']
-    read_only_fields = ['username', 'email']
+    fields = ['id', 'username', 'full_name', 'email', 'is_admin']
+    read_only_fields = ['username', 'email', 'password']
+
+class UserMeSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ['id', 'username', 'full_name', 'email', 'is_admin']
+    read_only_fields = ['is_admin']
 
 class UserListSerializer(serializers.ModelSerializer):
   files_count = serializers.IntegerField(read_only=True)
@@ -29,8 +35,8 @@ class UserListSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = ['id', 'username', 'email', 'files_count', 'total_size', 'is_admin']
-    read_only_fields = ['id', 'username', 'email', 'files_count', 'total_size']
+    fields = ['id', 'username', 'full_name', 'email', 'files_count', 'total_size', 'is_admin']
+    read_only_fields = ['id', 'username', 'full_name', 'email', 'files_count', 'total_size', 'is_admin']
 
 class LoginSerializer(serializers.Serializer):
   username = serializers.CharField()

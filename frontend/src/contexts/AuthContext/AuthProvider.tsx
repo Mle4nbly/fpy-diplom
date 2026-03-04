@@ -4,6 +4,7 @@ import { useApi } from '../../shared/hooks/useApi';
 
 type UserDataType = {
   username: string;
+  full_name: string;
   email: string;
   is_admin: boolean;
 };
@@ -24,8 +25,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const data = await getData('/users/me');
       if (!data) return;
 
-      const { username, email, is_admin } = data;
-      setUserData({ username, email, is_admin });
+      const { username, full_name, email, is_admin } = data;
+      setUserData({ username, full_name, email, is_admin });
     } catch {
       setUserData(null);
       setToken(null);
@@ -77,6 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         token,
+        full_name: userData?.full_name || null,
         username: userData?.username || null,
         email: userData?.email || null,
         adminRights: userData?.is_admin ?? null,

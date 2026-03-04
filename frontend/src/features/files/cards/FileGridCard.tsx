@@ -96,7 +96,7 @@ export const FileGridCard = ({
 
   return (
     <>
-      <div className="grid-card">
+      <div className="grid-card" onDoubleClick={handleOpenDetailModal}>
         <div className="grid-header">
           {isRenaming ? (
             <NameInputField

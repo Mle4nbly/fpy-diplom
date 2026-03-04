@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { ApiError } from '../../utils/ApiError';
 import { getRequestOptions } from '../../utils/getRequestOptions';
+import { parseResponse } from '../../utils/parseResponse';
 
 export const useApi = (token: string | null) => {
   const abortRef = useRef<AbortController | null>(null);
@@ -20,13 +21,7 @@ export const useApi = (token: string | null) => {
         }),
       );
 
-      let data = null;
-
-      try {
-        data = await response.json();
-      } catch (error: unknown) {
-        console.log(error);
-      }
+      const data = await parseResponse(response)
 
       if (!response.ok) {
         throw new ApiError(response.status, data?.error);
@@ -62,19 +57,13 @@ export const useApi = (token: string | null) => {
         }),
       );
 
-      let data = null;
-
-      try {
-        data = await response.json();
-      } catch (error: unknown) {
-        console.log(error);
-      }
+      const data = await parseResponse(response)
 
       if (!response.ok) {
         throw new ApiError(response.status, data?.error);
       }
 
-      return response.status == 204 ? true : data;
+      return data ?? true;
     } catch (error: unknown) {
       if (error instanceof Error && error.name == 'AbortError') {
         return null;
@@ -98,19 +87,12 @@ export const useApi = (token: string | null) => {
         }),
       );
 
-      let data = null;
-
       if (!response.ok) {
-        try {
-          data = await response.json();
-        } catch (error: unknown) {
-          console.log(error);
-        }
-
-        throw new ApiError(response.status, data.error);
+        const data = await parseResponse(response);
+        throw new ApiError(response.status, data?.error);
       }
 
-      data = await response.blob();
+      const data = await response.blob();
 
       const url = window.URL.createObjectURL(data);
 

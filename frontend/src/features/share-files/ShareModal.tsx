@@ -35,6 +35,7 @@ export const ShareModal = ({ shareLink, fileName, onClose }: DetailModalProps) =
                 className='form-control' 
                 type="text" 
                 value={link}
+                readOnly
               />
               <button className="btn btn-dark btn-text">
                 <span onClick={onClose}>Готово</span>
