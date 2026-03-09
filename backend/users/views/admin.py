@@ -4,10 +4,21 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models import Count, Sum
 from ..models import User
 from ..serializers import UserListSerializer, UserAdminSerializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 class IsAdmin(permissions.BasePermission):
   def has_permission(self, request, view):
-    return bool(request.user and request.user.is_authenticated and request.user.is_admin)
+    if bool(
+      request.user and 
+      request.user.is_authenticated and 
+      request.user.is_admin
+    ) == True:
+      return True
+    else:
+      logger.warning(f"Unauthorized admin access attempt by user {getattr(request.user, 'username', 'Anonymous')}")
+      return False
   
 class UserListView(generics.ListAPIView):
   permission_classes = [IsAdmin]

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { FilesManagerPage } from './pages/FilesManagerPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegPage } from './pages/RegPage';
@@ -12,19 +12,21 @@ import { AuthProvider } from './contexts/AuthContext/AuthProvider';
 import { PrivateRoute } from './layouts/PrivateRoute';
 import { PublicRoute } from './layouts/PublicRoute';
 import { ErrorPage } from './pages/ErrorPage';
+import { LandingPage } from './pages/LandingPage';
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/auth" element={<PublicRoute />}>
+        <Route index element={<LandingPage />} />
+
+        <Route element={<PublicRoute />}>
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/reg" element={<RegPage />} />
         </Route>
 
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Navigate to="/home" replace />} />
+          <Route element={<MainLayout />}>
             <Route path="/home" element={<FilesManagerPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:username" element={<AdminFilesManagerPage />} />

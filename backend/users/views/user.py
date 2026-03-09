@@ -5,6 +5,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework import permissions
 from django.contrib.auth import authenticate, login, logout
 from ..serializers import UserSerializer, LoginSerializer, UserMeSerializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 class MeView(generics.RetrieveUpdateAPIView):
   serializer_class = UserMeSerializer
@@ -18,7 +21,6 @@ class RegisterView(generics.CreateAPIView):
   serializer_class = UserSerializer
 
   def perform_create(self, serializer):
-    print(self.request)
     self.user = serializer.save()
     self.token, _ = Token.objects.get_or_create(user=self.user)
 
@@ -29,7 +31,7 @@ class RegisterView(generics.CreateAPIView):
       "token": self.token.key,
       "username": self.user.username
     }
-
+    
     return response
 
 class LoginView(APIView):
